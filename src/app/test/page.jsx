@@ -26,7 +26,7 @@ import {
 import { Doughnut, Bar } from "react-chartjs-2";
 
 // Constants
-import { getRoleColor, getRoleHex } from "@/constants/roleColors";
+import { getRoleColor, getRoleHex } from "@/constants/colorUtils/roleColors";
 
 // ==================== Chart.js Registration ====================
 ChartJS.register(
