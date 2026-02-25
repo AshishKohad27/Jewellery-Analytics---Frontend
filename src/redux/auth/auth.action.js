@@ -10,13 +10,30 @@ export const LoginUserAction = createAsyncThunk(
             const response = await axios.post(`${BASE_URL}`, payload);
             return response.data;
         } catch (error) {
-            rejectWithValue(
+            return rejectWithValue(
                 error?.response?.data?.message || "Something went wrong GetTestAction"
             )
         }
     }
 );
 
+export const GetRefreshToken = createAsyncThunk(
+    "get/refresh/token",
+    async (_, { rejectWithValue }) => {
+        try {
+            let payload = { refreshToken: null };
+            if (typeof window !== "undefined") {
+                payload.refreshToken = localStorage.getItem("refreshToken");
+            }
+            const response = await axios.post(`${BASE_URL}/refresh`, payload);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error?.response?.data?.message || "Something went wrong GetRefreshToken"
+            );
+        }
+    }
+);
 
 export const MeUserAction = createAsyncThunk(
     "get/me",
@@ -25,7 +42,7 @@ export const MeUserAction = createAsyncThunk(
             const response = await axios.get(`${BASE_URL}/me`);
             return response.data;
         } catch (error) {
-            rejectWithValue(
+            return rejectWithValue(
                 error?.response?.data?.message || "Something went wrong GetTestAction"
             )
         }

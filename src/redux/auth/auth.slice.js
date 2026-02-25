@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { LoginUserAction } from "./auth.action";
+import { tokenService } from "@/services/tokenService";
+
 import axios from "axios";
 
 const initialState = {
@@ -40,16 +42,17 @@ const authSlice = createSlice({
             // Store Token and set in header
             if (typeof window !== "undefined") {
 
-                if (tokens?.accessToken) {
-                    localStorage.setItem("accessToken", tokens.accessToken);
+                if (tokens?.accessToken && tokens?.refreshToken) {
+                    // localStorage.setItem("accessToken", tokens.accessToken);
+                    tokenService.setTokens(tokens.accessToken, tokens.refreshToken);
 
-                    axios.defaults.headers.common["Authorization"] =
-                        `Bearer ${tokens.accessToken}`;
+                    // axios.defaults.headers.common["Authorization"] =
+                    //     `Bearer ${tokens.accessToken}`;
                 }
 
-                if (tokens?.refreshToken) {
-                    localStorage.setItem("refreshToken", tokens.refreshToken);
-                }
+                // if (tokens?.refreshToken) {
+                // localStorage.setItem("refreshToken", tokens.refreshToken);
+                // }
             }
         });
         builder.addCase(LoginUserAction.rejected, (state, action) => {
@@ -60,3 +63,5 @@ const authSlice = createSlice({
         });
     },
 });
+
+export default authSlice.reducer;
