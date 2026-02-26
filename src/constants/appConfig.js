@@ -57,3 +57,9 @@ export const formatCurrencyCompact = (amount) => {
 
     return `₹${amount}`;
 };
+
+export const formatNumberWithComma = (amount) => {
+    if (amount === null || amount === undefined) return "0";
+
+    return new Intl.NumberFormat("en-IN").format(amount);
+};

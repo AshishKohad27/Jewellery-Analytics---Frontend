@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../";
 
 :root {
   /* Optional base colors */

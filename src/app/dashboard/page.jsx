@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SalesTrendSection, CategoryChart } from "./DashboardCharts";
 import { useEffect } from "react";
 import { GetSummaryAction } from "@/redux/analytics/analytics.action";
-import { formatCurrencyCompact } from "@/constants/appConfig";
+import { formatCurrencyCompact, formatNumberWithComma } from "@/constants/appConfig";
 
 export default function Dashboard() {
   const { loading, error, data, paramsData, successMessage } = useSelector(
@@ -61,9 +61,11 @@ export default function Dashboard() {
                     />
                   </svg>
                 </div>
-                <span className={`text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1`}>
+                <span
+                  className={`text-xs font-medium ${data?.sales?.trend === "up" ? "text-emerald-600 bg-emerald-50" : "text-red-600 bg-red-50"} px-2 py-1 rounded-full flex items-center gap-1`}
+                >
                   <svg
-                    className="w-3 h-3 rotate-[180deg]"
+                    className={`w-3 h-3 ${data?.sales?.trend === "up" ? "" : "rotate-180"}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -76,9 +78,9 @@ export default function Dashboard() {
                     />
                   </svg>
 
-                  {data?.sales?.difference > 0
-                    ? `+${data?.sales?.difference}%`
-                    : `${data?.sales?.difference}%`}
+                  {data?.sales?.trend === "up"
+                    ? `+${data?.sales?.difference}`
+                    : `${data?.sales?.difference}`}
                 </span>
               </div>
               <p className="text-sm text-slate-500 mb-1">Today's Sales</p>
@@ -108,9 +110,11 @@ export default function Dashboard() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1">
+                <span
+                  className={`text-xs font-medium ${data?.revenue?.trend === "up" ? "text-emerald-600 bg-emerald-50" : "text-red-600 bg-red-50"} px-2 py-1 rounded-full flex items-center gap-1`}
+                >
                   <svg
-                    className="w-3 h-3"
+                    className={`w-3 h-3 ${data?.revenue?.trend === "up" ? "" : "rotate-180"}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -122,12 +126,19 @@ export default function Dashboard() {
                       d="M5 10l7-7m0 0l7 7m-7-7v18"
                     />
                   </svg>
-                  +8.2%
+
+                  {data?.revenue?.trend === "up"
+                    ? `+${data?.revenue?.difference}`
+                    : `${data?.revenue?.difference}`}
                 </span>
               </div>
               <p className="text-sm text-slate-500 mb-1">Monthly Revenue</p>
-              <p className="text-2xl font-bold text-slate-800">₹48,25,600</p>
-              <p className="text-xs text-slate-400 mt-2">Target: ₹55,00,000</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {formatCurrencyCompact(data?.revenue?.total)}
+              </p>
+              <p className="text-xs text-slate-400 mt-2">
+                Target: {formatCurrencyCompact(data?.revenue?.target)}
+              </p>
             </div>
 
             {/* <!-- Inventory Value --> */}
@@ -149,13 +160,22 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                  854 items
+                  {data?.inventory?.items} items
                 </span>
               </div>
               <p className="text-sm text-slate-500 mb-1">Inventory Value</p>
-              <p className="text-2xl font-bold text-slate-800">₹2.4 Cr</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {formatCurrencyCompact(data?.inventory?.total)}
+              </p>
               <p className="text-xs text-slate-400 mt-2">
-                Gold: ₹1.8 Cr | Silver: ₹35L | Diamond: ₹25L
+                {data?.inventory?.categories?.list
+                  ?.map(
+                    (item) =>
+                      `${item?.category_name}: ${formatCurrencyCompact(
+                        item?.total_inventory_value,
+                      )}`,
+                  )
+                  .join(" | ")}
               </p>
             </div>
 
@@ -178,13 +198,16 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                  +24 new
+                  +{data?.customer?.new} new
                 </span>
               </div>
               <p className="text-sm text-slate-500 mb-1">Total Customers</p>
-              <p className="text-2xl font-bold text-slate-800">1,284</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {formatNumberWithComma(data?.customer?.total)}
+              </p>
               <p className="text-xs text-slate-400 mt-2">
-                Active this month: 342
+                Active this month:{" "}
+                {formatNumberWithComma(data?.customer?.active)}
               </p>
             </div>
           </div>
