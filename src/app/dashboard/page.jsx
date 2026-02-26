@@ -1,6 +1,32 @@
+"use client";
+
+import { useDispatch, useSelector } from "react-redux";
 import { SalesTrendSection, CategoryChart } from "./DashboardCharts";
+import { useEffect } from "react";
+import { GetSummaryAction } from "@/redux/analytics/analytics.action";
+import { formatCurrencyCompact } from "@/constants/appConfig";
 
 export default function Dashboard() {
+  const { loading, error, data, paramsData, successMessage } = useSelector(
+    (state) => state.analytic,
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(GetSummaryAction());
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log({
+      loading,
+      error,
+      data,
+      paramsData,
+      successMessage,
+    });
+  }, [loading]);
+
   return (
     <>
       <main className="lg:ml-64 pt-16 min-h-screen">
@@ -20,7 +46,7 @@ export default function Dashboard() {
             {/* <!-- Today's Sales --> */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600">
                   <svg
                     className="w-6 h-6 text-emerald-600"
                     fill="none"
@@ -35,9 +61,9 @@ export default function Dashboard() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1">
+                <span className={`text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1`}>
                   <svg
-                    className="w-3 h-3"
+                    className="w-3 h-3 rotate-[180deg]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -49,13 +75,18 @@ export default function Dashboard() {
                       d="M5 10l7-7m0 0l7 7m-7-7v18"
                     />
                   </svg>
-                  +12.5%
+
+                  {data?.sales?.difference > 0
+                    ? `+${data?.sales?.difference}%`
+                    : `${data?.sales?.difference}%`}
                 </span>
               </div>
               <p className="text-sm text-slate-500 mb-1">Today's Sales</p>
-              <p className="text-2xl font-bold text-slate-800">₹4,52,840</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {formatCurrencyCompact(data?.sales?.today)}
+              </p>
               <p className="text-xs text-slate-400 mt-2">
-                vs yesterday ₹4,02,350
+                vs yesterday {formatCurrencyCompact(data?.sales?.yesterday)}
               </p>
             </div>
 
