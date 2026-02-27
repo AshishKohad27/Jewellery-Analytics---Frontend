@@ -5,6 +5,7 @@ import SearchBar from "@/components/dataTable/SearchBar";
 import AddSupplierDialog from "@/components/dialog/suppliers/AddSupplierDialog";
 import DelSupplierDialog from "@/components/dialog/suppliers/DelSupplierDialog";
 import EditSupplierDialog from "@/components/dialog/suppliers/EditSupplierDialog";
+import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
 import { formatDate } from "@/constants/appConfig";
 import { getStatusChip } from "@/constants/colorUtils/statusColor";
 
@@ -77,14 +78,10 @@ export default function SupplierList() {
       page,
     }));
   };
-
-  const [open, setOpen] = useState(false);
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
-
-  const handleEdit = (supplier) => {
-    setSelectedSupplier(supplier);
-    setOpen(true);
-  };
+  
+  if (true) {
+    return <MasterDataSkeleton />;
+  }
 
   return (
     <main className="lg:ml-64 pt-16 min-h-screen">

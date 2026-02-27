@@ -48,6 +48,28 @@ export default function SideBar() {
           })}
         </div>
 
+        {/* <!-- Master Data Dropdown --> */}
+        <div className="pt-4">
+          <p className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+            Master Data
+          </p>
+          {navLink?.masterData.map((item, index) => {
+            const isActive = item?.link === pathname;
+            return (
+              <Link
+                key={index}
+                href={item?.link}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm
+                ${isActive ? "bg-gold-50 text-gold-700 font-medium" : "text-slate-600 hover:bg-slate-50"}
+                `}
+              >
+                {item?.icon}
+                {item?.label}
+              </Link>
+            );
+          })}
+        </div>
+
         {/* <!-- Admin Section --> */}
         <div className="pt-4">
           <p className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
