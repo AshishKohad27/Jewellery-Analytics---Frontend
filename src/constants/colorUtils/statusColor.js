@@ -1,4 +1,14 @@
 export const STATUS_COLORS = {
+    Active: {
+           hex: "#10B981",
+        bg: "bg-emerald-100",
+        text: "text-emerald-800",
+    },
+    Inactive: {
+        hex: "#EF4444",
+        bg: "bg-red-100",
+        text: "text-red-800",
+    },
     Pending: {
         hex: "#F59E0B",
         bg: "bg-amber-100",
@@ -39,6 +49,13 @@ const DEFAULT_STATUS_COLOR = {
 
 export const getStatusColor = (status) =>
     STATUS_COLORS[status] || DEFAULT_STATUS_COLOR;
+
+export const getStatusChip = (status) => {
+    console.log('status: ', STATUS_COLORS[status].bg);
+    return STATUS_COLORS[status]
+        ? `${STATUS_COLORS[status].bg} ${STATUS_COLORS[status].text}`
+        : `${DEFAULT_STATUS_COLOR[status].bg} ${DEFAULT_STATUS_COLOR[status].text}`;
+}
 
 export const getStatusHex = (status) =>
     getStatusColor(status).hex;

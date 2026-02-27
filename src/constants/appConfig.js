@@ -63,3 +63,46 @@ export const formatNumberWithComma = (amount) => {
 
     return new Intl.NumberFormat("en-IN").format(amount);
 };
+
+export const formatDateTime = (isoString) => {
+    if (!isoString) return "-";
+
+    const date = new Date(isoString);
+
+    if (isNaN(date)) return "-";
+
+    return date.toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+    });
+};
+
+export const formatDate = (isoString) => {
+    if (!isoString) return "-";
+
+    const date = new Date(isoString);
+    if (isNaN(date)) return "-";
+
+    return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+};
+
+export const formatTime = (isoString) => {
+  if (!isoString) return "-";
+
+  const date = new Date(isoString);
+  if (isNaN(date)) return "-";
+
+  return date.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};

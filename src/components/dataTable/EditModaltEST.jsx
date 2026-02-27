@@ -9,23 +9,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
-export default function EditSupplierDialog() {
+export default function EditSupplierDialogtEST() {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">Edit Supplier</Button>
       </DialogTrigger>
 
-      <DialogContent className="p-0 overflow-hidden rounded-xl shadow-xl w-full max-w-lg">
+      <DialogContent
+        className="p-0 overflow-hidden rounded-xl shadow-xl w-full max-w-lg"
+        showCloseButton={false}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-800">
-            Edit Supplier
-          </h3>
+          <DialogTitle>
+            <h3 className="text-lg font-semibold text-slate-800">
+              Edit Supplier
+            </h3>
+          </DialogTitle>
           <DialogClose asChild>
             <button className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
               <svg
