@@ -8,11 +8,12 @@ import {
 import { useState } from "react";
 
 const initialState = {
-  supplier_name: "",
-  phone: "",
-  email: "",
+  metal_name: "Gold",
+  metal_code: "GLD",
+  description: "Precious yellow metal used in jewellery",
 };
-export default function AddSupplierDialog() {
+
+export default function AddMetalDialog() {
   const [formData, setFormData] = useState(initialState);
 
   const handleChange = (e) => {
@@ -44,9 +45,9 @@ export default function AddSupplierDialog() {
               strokeLinejoin="round"
               strokeWidth="2"
               d="M12 4v16m8-8H4"
-            />
+            ></path>
           </svg>
-          Add Supplier
+          Add Metal
         </button>
       </DialogTrigger>
 
@@ -57,7 +58,7 @@ export default function AddSupplierDialog() {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <DialogTitle className="text-lg font-semibold text-slate-800">
-            Add New Supplier
+            Add New Metal
           </DialogTitle>
           <DialogClose asChild>
             <button className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
@@ -80,51 +81,53 @@ export default function AddSupplierDialog() {
 
         {/* Body */}
         <form onSubmit={handleSubmit}>
-          <input type="hidden" name="supplierId" value="1" />
-
           <div className="p-6 space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Supplier Name <span className="text-red-500">*</span>
+                Metal Name <span className="text-red-500">*</span>
               </label>
               <input
                 onChange={handleChange}
-                value={formData?.supplier_name}
+                value={formData?.metal_name}
+                name="metal_name"
                 type="text"
-                name="supplier_name"
+                id="editMetalName"
                 required
-                placeholder="Enter supplier name"
+                placeholder="e.g. Gold"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Email <span className="text-red-500">*</span>
+                Metal Code <span className="text-red-500">*</span>
               </label>
               <input
                 onChange={handleChange}
-                value={formData?.email}
-                type="email"
-                name="email"
-                required
-                placeholder="Enter email address"
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Phone
-              </label>
-              <input
-                onChange={handleChange}
-                value={formData?.phone}
+                value={formData?.metal_code}
+                name="metal_code"
                 type="text"
-                name="phone"
-                placeholder="Enter phone number"
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                id="editMetalCode"
+                required
+                placeholder="e.g. AU"
+                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none uppercase"
               />
+              <p className="text-xs text-slate-400 mt-1">
+                Must be unique. Uppercase letters only.
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Description
+              </label>
+              <textarea
+                onChange={handleChange}
+                value={formData?.description}
+                name="description"
+                id="editMetalDesc"
+                rows="3"
+                placeholder="Optional description..."
+                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+              ></textarea>
             </div>
           </div>
 
@@ -143,7 +146,7 @@ export default function AddSupplierDialog() {
               type="submit"
               className="px-4 py-2.5 bg-gold-500 text-white hover:bg-gold-600 rounded-lg text-sm font-medium transition-colors"
             >
-              Save Supplier
+              Save Metal
             </button>
           </div>
         </form>

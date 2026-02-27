@@ -1,30 +1,49 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 
-export default function EditSupplierDialog() {
+const initialState = {
+  supplier_name: "",
+  phone: "",
+  email: "",
+};
+export default function EditSupplierDialog({ supplierId }) {
+  const [formData, setFormData] = useState(initialState);
+
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("supplierId: ", supplierId);
+    console.log("formData: ", formData);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded">
+        <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded">
           <svg
-            class="w-4 h-4"
+            className="w-4 h-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
             ></path>
           </svg>
@@ -62,13 +81,8 @@ export default function EditSupplierDialog() {
         </div>
 
         {/* Body */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            // handle update logic here
-          }}
-        >
-          <input type="hidden" name="supplierId" value="1" />
+        <form onSubmit={handleSubmit}>
+          <input type="hidden" name="supplierId" value={supplierId} />
 
           <div className="p-6 space-y-4">
             <div>
@@ -76,8 +90,10 @@ export default function EditSupplierDialog() {
                 Supplier Name <span className="text-red-500">*</span>
               </label>
               <input
+                onChange={handleChange}
+                value={formData?.supplier_name}
                 type="text"
-                name="supplierName"
+                name="supplier_name"
                 required
                 placeholder="Enter supplier name"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
@@ -89,8 +105,10 @@ export default function EditSupplierDialog() {
                 Email <span className="text-red-500">*</span>
               </label>
               <input
+                onChange={handleChange}
+                value={formData?.email}
                 type="email"
-                name="supplierEmail"
+                name="email"
                 required
                 placeholder="Enter email address"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
@@ -102,8 +120,10 @@ export default function EditSupplierDialog() {
                 Phone
               </label>
               <input
+                onChange={handleChange}
+                value={formData?.phone}
                 type="text"
-                name="supplierPhone"
+                name="phone"
                 placeholder="Enter phone number"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
               />

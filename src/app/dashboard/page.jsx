@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { SalesTrendSection, CategoryChart } from "./DashboardCharts";
 import { useEffect } from "react";
 import { GetSummaryAction } from "@/redux/analytics/analytics.action";
-import { formatCurrencyCompact, formatNumberWithComma } from "@/constants/appConfig";
+import {
+  formatCurrencyCompact,
+  formatNumberWithComma,
+} from "@/constants/appConfig";
+import DashboardSkeleton from "@/components/skeleton/DashboardSkeleton";
 
 export default function Dashboard() {
   const { loading, error, data, paramsData, successMessage } = useSelector(
@@ -26,7 +30,9 @@ export default function Dashboard() {
       successMessage,
     });
   }, [loading]);
-
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
   return (
     <>
       <main className="lg:ml-64 pt-16 min-h-screen">

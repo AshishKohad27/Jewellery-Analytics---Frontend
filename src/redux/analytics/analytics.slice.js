@@ -4,7 +4,7 @@ import { GetSummaryAction } from "./analytics.action";
 
 const initialState = {
     value: 0,
-    loading: false,
+    loading: true,
     error: false,
     successMessage: "",
     errorMessage: "",

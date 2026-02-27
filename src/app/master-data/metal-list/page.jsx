@@ -2,13 +2,11 @@
 
 import Pagination from "@/components/dataTable/Pagination";
 import SearchBar from "@/components/dataTable/SearchBar";
-import AddSupplierDialog from "@/components/dialog/suppliers/AddSupplierDialog";
-import DelSupplierDialog from "@/components/dialog/suppliers/DelSupplierDialog";
-import EditSupplierDialog from "@/components/dialog/suppliers/EditSupplierDialog";
+import AddMetalDialog from "@/components/dialog/metals/AddMetalDialog";
+import DelMetalDialog from "@/components/dialog/metals/DelMetalDialog";
+import EditMetalDialog from "@/components/dialog/metals/EditMetalDialog";
 import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
 import { formatDate } from "@/constants/appConfig";
-import { getStatusChip } from "@/constants/colorUtils/statusColor";
-
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -89,9 +87,9 @@ export default function SupplierList() {
         {/* <!-- Page Header --> */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Suppliers</h1>
+            <h1 className="text-2xl font-bold text-slate-800">Metals</h1>
             <p className="text-slate-500 mt-1">
-              Manage your jewellery suppliers
+              Manage metal types for jewellery items
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -115,34 +113,33 @@ export default function SupplierList() {
               Bulk Import
             </button>
 
-            <AddSupplierDialog />
+            <AddMetalDialog />
           </div>
         </div>
 
         {/* <!-- Stats Cards --> */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Total Suppliers</p>
-            <p className="text-2xl font-bold text-slate-800">24</p>
+            <p className="text-sm text-slate-500 mb-1">Total Metals</p>
+            <p className="text-2xl font-bold text-slate-800">5</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Active Suppliers</p>
-            <p className="text-2xl font-bold text-emerald-600">20</p>
+            <p className="text-sm text-slate-500 mb-1">Metal Codes</p>
+            <p className="text-2xl font-bold text-slate-800">AU, AG, PT, RG, WG</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Inactive Suppliers</p>
-            <p className="text-2xl font-bold text-red-600">4</p>
+            <p className="text-sm text-slate-500 mb-1">Recently Added</p>
+            <p className="text-2xl font-bold text-slate-800">White Gold</p>
           </div>
         </div>
 
         {/* <!-- Search --> */}
         <SearchBar
           onSearch={handleSearch}
-          placeholder="Search by supplier name or email..."
+          placeholder="Search by metal name or code..."
         />
 
-        {/* <!-- Suppliers Table --> */}
-        {/* <!-- Schema: suppliers { id, supplier_name, phone, email (unique), status (boolean), created_at, updated_at } --> */}
+        {/* <!-- Table --> */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
           {/* Table */}
           <div className="overflow-x-auto">
@@ -153,16 +150,13 @@ export default function SupplierList() {
                     ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Supplier Name
+                    Metal Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Email
+                    Metal Code
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Phone
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
-                    Status
+                    Description
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
                     Created At
@@ -173,40 +167,22 @@ export default function SupplierList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                <tr
-                  className="hover:bg-slate-50"
-                  data-supplier-name="Rajesh Gold Traders"
-                  data-supplier-email="rajesh@goldtraders.com"
-                >
+                <tr className="hover:bg-slate-50">
                   <td className="px-6 py-4 text-sm text-slate-600">1</td>
                   <td className="px-6 py-4 text-sm font-medium text-slate-800">
-                    Rajesh Gold Traders
+                    Gold
                   </td>
+                  <td className="px-6 py-4 text-sm text-slate-600">AU</td>
                   <td className="px-6 py-4 text-sm text-slate-600">
-                    rajesh@goldtraders.com
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">
-                    +91 98765 43210
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusChip("Active")}`}
-                    >
-                      Active
-                    </span>
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusChip("Inactive")}`}
-                    >
-                      Inactive
-                    </span>
+                    Pure gold metal
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500">
                     {formatDate("2026-02-26T16:31:08.763Z")}
                   </td>
                   <td className="px-6 py-4 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <EditSupplierDialog supplierId={1} />
-                      <DelSupplierDialog supplierId={1} />
+                      <EditMetalDialog />
+                      <DelMetalDialog />
                     </div>
                   </td>
                 </tr>
@@ -219,7 +195,7 @@ export default function SupplierList() {
             displayButtons={5}
             total={{ items: 100, pages: 10 }}
             onPage={handlePage}
-            title="suppliers"
+            title="metals"
           />
         </div>
       </div>
