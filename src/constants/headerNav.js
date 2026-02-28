@@ -59,7 +59,7 @@ export const navLink = {
         },
         {
             label: "Customers",
-            link: "",
+            link: "/customer-list",
             icon: (
                 <svg
                     className="w-5 h-5"
@@ -164,7 +164,7 @@ export const navLink = {
     adminLinks: [
         {
             label: "User Management",
-            link: "",
+            link: "/admin/users",
             icon: (
                 <svg
                     className="w-5 h-5"

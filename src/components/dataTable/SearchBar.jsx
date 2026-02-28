@@ -1,7 +1,11 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function SearchBar({ onSearch, placeholder }) {
+export default function SearchBar({
+  onSearch,
+  placeholder,
+  outerContainer = true,
+}) {
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search");
@@ -19,7 +23,9 @@ export default function SearchBar({ onSearch, placeholder }) {
   }, [search]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-100 mb-6 p-4">
+    <div
+      className={`${outerContainer ? "bg-white rounded-xl shadow-sm border border-slate-100 mb-6 p-4" : null}`}
+    >
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <svg

@@ -3,6 +3,10 @@ import "./globals.css";
 import ReduxProvider from "@/redux/ReduxProvider";
 import "@/services/setupInterceptors";
 
+import BottomNavBar from "@/components/site/BottomNavBar";
+import Header from "@/components/site/Header";
+import SideBar from "@/components/site/SideBar";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,7 +29,10 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Header />
+        <SideBar />
         <ReduxProvider>{children}</ReduxProvider>
+        <BottomNavBar />
       </body>
     </html>
   );
