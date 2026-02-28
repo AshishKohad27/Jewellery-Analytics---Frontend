@@ -6,7 +6,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
+import { CreateSupplier } from "@/redux/supplier/supplier.action";
+import { toggleSupplierLoading } from "@/redux/supplier/supplier.slice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const initialState = {
   supplier_name: "",
@@ -16,6 +19,8 @@ const initialState = {
 };
 export default function AddSupplierDialog() {
   const [formData, setFormData] = useState(initialState);
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { value, name, type, checked } = e.target;
@@ -28,11 +33,15 @@ export default function AddSupplierDialog() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("formData: ", formData);
+    dispatch(CreateSupplier({ data: formData }));
+    dispatch(toggleSupplierLoading());
+
+    setFormData(initialState);
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="px-4 py-2.5 bg-gold-500 text-white hover:bg-gold-600 rounded-lg text-sm font-medium flex items-center gap-2">
           <svg

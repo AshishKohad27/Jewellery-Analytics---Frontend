@@ -91,26 +91,10 @@ export default function SupplierList() {
   }, []);
 
   useEffect(() => {
-    console.log("apiParams: ", apiParams);
-  }, [apiParams]);
-
-  useEffect(() => {
     dispatch(GetSuppliers(apiParams));
     dispatch(GetSupplierStats());
   }, [apiParams, dispatch, isSupplierLoading]);
 
-  useEffect(() => {
-    console.log({
-      loading,
-      error,
-      successMessage,
-      errorMessage,
-      data,
-      paramsData,
-      stats,
-      isSupplierLoading
-    });
-  }, [isSupplierLoading]);
 
   return (
     <main className="lg:ml-64 pt-16 min-h-screen">

@@ -8,17 +8,19 @@ import {
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
 import { UpdateSupplier } from "@/redux/supplier/supplier.action";
 import { toggleSupplierLoading } from "@/redux/supplier/supplier.slice";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 
+const getFormData = (data) => ({
+  supplier_name: data?.supplier_name,
+  phone: data?.phone,
+  email: data?.email,
+  status: data?.status,
+});
+
 export default function EditSupplierDialog({ supplierData, supplierId }) {
-console.log('supplierData: ', supplierData);
-  const [formData, setFormData] = useState({
-    supplier_name: supplierData?.supplier_name,
-    phone: supplierData?.phone,
-    email: supplierData?.email,
-    status: supplierData?.status,
-  });
+  const [formData, setFormData] = useState(getFormData(supplierData));
+  const [open, setOpen] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -35,10 +37,19 @@ console.log('supplierData: ', supplierData);
     e.preventDefault();
     dispatch(UpdateSupplier({ data: formData, supplierId }));
     dispatch(toggleSupplierLoading());
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (isOpen) {
+          setFormData(getFormData(supplierData));
+        }
+        setOpen(isOpen);
+      }}
+    >
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded">
           <svg

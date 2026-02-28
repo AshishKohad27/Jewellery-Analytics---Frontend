@@ -39,8 +39,9 @@ export const GetSupplierStats = createAsyncThunk(
 export const CreateSupplier = createAsyncThunk(
     "create/suppliers",
     async (payload, { rejectWithValue }) => {
+    console.log('payload: ', payload);
         try {
-            const response = await apiClient.post(`${BASE_URL}/`, payload.body);
+            const response = await apiClient.post(`${BASE_URL}/`, payload.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(
