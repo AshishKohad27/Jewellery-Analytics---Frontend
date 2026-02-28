@@ -36,10 +36,8 @@ export default function DelSupplierDialog({ supplierId }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200 hidden">
-          <DialogTitle>
-            <h3 className="text-lg font-semibold text-slate-800">
+          <DialogTitle className="text-lg font-semibold text-slate-800">
               Deactivate Supplier
-            </h3>
           </DialogTitle>
           <DialogClose asChild>
             <button className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">

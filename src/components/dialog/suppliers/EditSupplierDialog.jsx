@@ -5,29 +5,36 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
+import { UpdateSupplier } from "@/redux/supplier/supplier.action";
+import { toggleSupplierLoading } from "@/redux/supplier/supplier.slice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const initialState = {
-  supplier_name: "",
-  phone: "",
-  email: "",
-};
-export default function EditSupplierDialog({ supplierId }) {
-  const [formData, setFormData] = useState(initialState);
+export default function EditSupplierDialog({ supplierData, supplierId }) {
+console.log('supplierData: ', supplierData);
+  const [formData, setFormData] = useState({
+    supplier_name: supplierData?.supplier_name,
+    phone: supplierData?.phone,
+    email: supplierData?.email,
+    status: supplierData?.status,
+  });
+
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
-    const { value, name } = e.target;
+    const { value, name, type, checked } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("supplierId: ", supplierId);
-    // console.log("formData: ", formData);
+    dispatch(UpdateSupplier({ data: formData, supplierId }));
+    dispatch(toggleSupplierLoading());
   };
 
   return (
@@ -56,10 +63,8 @@ export default function EditSupplierDialog({ supplierId }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
-          <DialogTitle>
-            <h3 className="text-lg font-semibold text-slate-800">
-              Edit Supplier
-            </h3>
+          <DialogTitle className="text-lg font-semibold text-slate-800">
+            Edit Supplier
           </DialogTitle>
           <DialogClose asChild>
             <button className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
@@ -127,6 +132,36 @@ export default function EditSupplierDialog({ supplierId }) {
                 placeholder="Enter phone number"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
               />
+            </div>
+
+            {/* <!-- Status Toggle --> */}
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Status
+                </label>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Set role as active or inactive
+                </p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  onChange={handleChange}
+                  value={formData?.status}
+                  name="status"
+                  type="checkbox"
+                  id="addStatus"
+                  checked={formData?.status}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-500"></div>
+                <span
+                  id="addStatusLabel"
+                  className={`ml-3 text-sm font-medium ${formData?.status ? getStatusChipColor("Active") : getStatusChipColor("Inactive")}`}
+                >
+                  {formData?.status ? "Active" : "Inactive"}
+                </span>
+              </label>
             </div>
           </div>
 

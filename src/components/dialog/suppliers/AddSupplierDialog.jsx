@@ -5,22 +5,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
 import { useState } from "react";
 
 const initialState = {
   supplier_name: "",
   phone: "",
   email: "",
+  status: true,
 };
 export default function AddSupplierDialog() {
   const [formData, setFormData] = useState(initialState);
 
   const handleChange = (e) => {
-    const { value, name } = e.target;
+    const { value, name, type, checked } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -125,6 +127,36 @@ export default function AddSupplierDialog() {
                 placeholder="Enter phone number"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
               />
+            </div>
+
+            {/* <!-- Status Toggle --> */}
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Status
+                </label>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Set role as active or inactive
+                </p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  onChange={handleChange}
+                  value={formData?.status}
+                  name="status"
+                  type="checkbox"
+                  id="addStatus"
+                  checked={formData?.status}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-500"></div>
+                <span
+                  id="addStatusLabel"
+                  className={`ml-3 text-sm font-medium ${formData?.status ? getStatusChipColor("Active") : getStatusChipColor("Inactive")}`}
+                >
+                  {formData?.status ? "Active" : "Inactive"}
+                </span>
+              </label>
             </div>
           </div>
 

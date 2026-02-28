@@ -3,6 +3,7 @@ import testSlice from '@/redux/test/test.slice';
 import authSlice from '@/redux/auth/auth.slice';
 import analyticsSlice from '@/redux/analytics/analytics.slice';
 import roleSlice from '@/redux/role/role.slice';
+import supplierSlice from '@/redux/supplier/supplier.slice';
 
 export const store = configureStore({
     reducer: {
@@ -10,5 +11,7 @@ export const store = configureStore({
         auth: authSlice,
         analytic: analyticsSlice,
         role: roleSlice,
+        supplier: supplierSlice,
+
     }
 });

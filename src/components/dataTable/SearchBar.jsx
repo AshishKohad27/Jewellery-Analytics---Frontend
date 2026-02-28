@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function SearchBar({
   onSearch,
@@ -9,18 +9,28 @@ export default function SearchBar({
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search");
+  const debounceRef = useRef(null);
 
+  // Sync from URL only
   useEffect(() => {
     setSearch(searchQuery || "");
   }, [searchQuery]);
 
-  // Debounce logic
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     onSearch(search.trim());
-  //   }, 500);
-  //   return () => clearTimeout(timer);
-  // }, [search, onSearch]);
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => clearTimeout(debounceRef.current);
+  }, []);
+
+  // Debounce called from user input only, not from useEffect
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onSearch?.(value.trim());
+    }, 500);
+  };
 
   return (
     <div
@@ -48,7 +58,7 @@ export default function SearchBar({
             className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
             name="search"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleChange}
           />
         </div>
       </div>

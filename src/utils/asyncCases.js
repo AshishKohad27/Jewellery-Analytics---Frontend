@@ -1,27 +1,37 @@
-// utils/addAsyncCases.js
 export const addAsyncCases = (builder, action, options = {}) => {
     const {
-        onFulfilled = (state, payload) => {
-            state.data = payload?.data || [];
-            state.paramsData = payload?.params || [];
-            state.successMessage = payload?.message || "";
-        }
+        onPending,
+        onFulfilled,
+        onRejected
     } = options;
 
     builder
         .addCase(action.pending, (state) => {
             state.loading = true;
             state.error = false;
+
+            if (onPending) {
+                onPending(state);
+            }
         })
         .addCase(action.fulfilled, (state, action) => {
             state.loading = false;
             state.error = false;
-            onFulfilled(state, action.payload);
+            state.errorMessage = "";
+            state.successMessage = action.payload?.message || "";
+
+            if (onFulfilled) {
+                onFulfilled(state, action.payload);
+            }
         })
         .addCase(action.rejected, (state, action) => {
             state.loading = false;
             state.error = true;
             state.successMessage = "";
             state.errorMessage = action.payload || action.error.message;
+
+            if (onRejected) {
+                onRejected(state, action);
+            }
         });
 };

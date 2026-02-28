@@ -16,9 +16,7 @@ export default function Pagination({
     setPage(pageFromUrl);
   }, [searchParams]);
 
-  // useEffect(() => {
-  //   onPage?.(page); // notify parent
-  // }, [page, onPage]);
+
 
   const pages = useMemo(() => {
     const half = Math.floor(displayButtons / 2);
@@ -42,7 +40,9 @@ export default function Pagination({
         {/* PREVIOUS BUTTON */}
         <button
           onClick={() => {
-            setPage((prev) => Math.max(1, prev - 1));
+            const newPage = Math.max(1, page - 1);
+            setPage(newPage);
+            onPage?.(newPage);
           }}
           disabled={page === 1}
           className="cursor-pointer px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-500 hover:bg-slate-50 disabled:opacity-50"
@@ -54,7 +54,10 @@ export default function Pagination({
         {pages.map((p) => (
           <button
             key={p}
-            onClick={() => setPage(p)}
+            onClick={() => {
+              setPage(p);
+              onPage?.(p);
+            }}
             className={`cursor-pointer px-3 py-1.5 text-sm ${
               page === p
                 ? "bg-gold-500 text-white rounded-lg"
@@ -68,7 +71,9 @@ export default function Pagination({
         {/* NEXT BUTTON */}
         <button
           onClick={() => {
-            setPage((prev) => Math.min(total.pages, prev + 1));
+            const newPage = Math.min(total.pages, page + 1);
+            setPage(newPage);
+            onPage?.(newPage);
           }}
           disabled={total.pages === page}
           className="cursor-pointer px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 disabled:opacity-50"

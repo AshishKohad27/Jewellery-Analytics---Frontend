@@ -7,7 +7,7 @@ import EditUserDialog from "@/components/dialog/user/EditUserDialog";
 import { formatDate } from "@/constants/appConfig";
 import { getStatusChip } from "@/constants/colorUtils/statusColor";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Users() {
   const [apiParams, setApiParams] = useState(initialStateParams);
@@ -35,40 +35,33 @@ export default function Users() {
   useEffect(() => {
     if (!isHydrated) return;
 
-    const params = new URLSearchParams(searchParams.toString());
-    // console.log("params: ", params);
+    const params = new URLSearchParams();
 
     Object.entries(apiParams).forEach(([key, value]) => {
       if (value) {
         params.set(key, value);
-      } else {
-        params.delete(key);
       }
     });
 
     const newQuery = params.toString();
-    const currentQuery = searchParams.toString();
-
-    if (newQuery !== currentQuery) {
-      router.replace(`?${newQuery}`, { scroll: false });
-    }
-  }, [apiParams, router, searchParams, isHydrated]);
+    router.replace(`?${newQuery}`, { scroll: false });
+  }, [apiParams, router, isHydrated]);
 
   // Handle Inputs
-  const handleSearch = (value) => {
+  const handleSearch = useCallback((value) => {
     setApiParams((prev) => ({
       ...prev,
       search: value,
       page: 1,
     }));
-  };
+  }, []);
 
-  const handlePage = (page) => {
+  const handlePage = useCallback((page) => {
     setApiParams((prev) => ({
       ...prev,
       page,
     }));
-  };
+  }, []);
 
   if (false) {
     return <MasterDataSkeleton />;

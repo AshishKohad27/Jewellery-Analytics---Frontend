@@ -5,12 +5,18 @@ import SearchBar from "@/components/dataTable/SearchBar";
 import AddSupplierDialog from "@/components/dialog/suppliers/AddSupplierDialog";
 import DelSupplierDialog from "@/components/dialog/suppliers/DelSupplierDialog";
 import EditSupplierDialog from "@/components/dialog/suppliers/EditSupplierDialog";
-import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
+import StatsCardsSkeleton from "@/components/skeleton/StatsCardsSkeleton";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { formatDate } from "@/constants/appConfig";
 import { getStatusChip } from "@/constants/colorUtils/statusColor";
+import {
+  GetSuppliers,
+  GetSupplierStats,
+} from "@/redux/supplier/supplier.action";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialStateParams = {
   search: "",
@@ -23,6 +29,18 @@ export default function SupplierList() {
   const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const {
+    loading,
+    error,
+    successMessage,
+    errorMessage,
+    data,
+    paramsData,
+    stats,
+    isSupplierLoading,
+  } = useSelector((state) => state.supplier);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isHydrated) return;
@@ -44,44 +62,55 @@ export default function SupplierList() {
   useEffect(() => {
     if (!isHydrated) return;
 
-    const params = new URLSearchParams(searchParams.toString());
-    // console.log("params: ", params);
+    const params = new URLSearchParams();
 
     Object.entries(apiParams).forEach(([key, value]) => {
       if (value) {
         params.set(key, value);
-      } else {
-        params.delete(key);
       }
     });
 
     const newQuery = params.toString();
-    const currentQuery = searchParams.toString();
-
-    if (newQuery !== currentQuery) {
-      router.replace(`?${newQuery}`, { scroll: false });
-    }
-  }, [apiParams, router, searchParams, isHydrated]);
+    router.replace(`?${newQuery}`, { scroll: false });
+  }, [apiParams, router, isHydrated]);
 
   // Handle Inputs
-  const handleSearch = (value) => {
+  const handleSearch = useCallback((value) => {
     setApiParams((prev) => ({
       ...prev,
       search: value,
       page: 1,
     }));
-  };
+  }, []);
 
-  const handlePage = (page) => {
+  const handlePage = useCallback((page) => {
     setApiParams((prev) => ({
       ...prev,
       page,
     }));
-  };
+  }, []);
 
-  if (false) {
-    return <MasterDataSkeleton />;
-  }
+  useEffect(() => {
+    console.log("apiParams: ", apiParams);
+  }, [apiParams]);
+
+  useEffect(() => {
+    dispatch(GetSuppliers(apiParams));
+    dispatch(GetSupplierStats());
+  }, [apiParams, dispatch, isSupplierLoading]);
+
+  useEffect(() => {
+    console.log({
+      loading,
+      error,
+      successMessage,
+      errorMessage,
+      data,
+      paramsData,
+      stats,
+      isSupplierLoading
+    });
+  }, [isSupplierLoading]);
 
   return (
     <main className="lg:ml-64 pt-16 min-h-screen">
@@ -120,20 +149,30 @@ export default function SupplierList() {
         </div>
 
         {/* <!-- Stats Cards --> */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Total Suppliers</p>
-            <p className="text-2xl font-bold text-slate-800">24</p>
+        {loading ? (
+          <StatsCardsSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <p className="text-sm text-slate-500 mb-1">Total Suppliers</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {stats?.total}
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <p className="text-sm text-slate-500 mb-1">Active Suppliers</p>
+              <p className="text-2xl font-bold text-emerald-600">
+                {stats?.active}
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <p className="text-sm text-slate-500 mb-1">Inactive Suppliers</p>
+              <p className="text-2xl font-bold text-red-600">
+                {stats?.inactive}
+              </p>
+            </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Active Suppliers</p>
-            <p className="text-2xl font-bold text-emerald-600">20</p>
-          </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Inactive Suppliers</p>
-            <p className="text-2xl font-bold text-red-600">4</p>
-          </div>
-        </div>
+        )}
 
         {/* <!-- Search --> */}
         <SearchBar
@@ -141,87 +180,93 @@ export default function SupplierList() {
           placeholder="Search by supplier name or email..."
         />
 
-        {/* <!-- Suppliers Table --> */}
-        {/* <!-- Schema: suppliers { id, supplier_name, phone, email (unique), status (boolean), created_at, updated_at } --> */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-          {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full" id="suppliersTable">
-              <thead>
-                <tr className="bg-slate-50">
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Supplier Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Phone
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Created At
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                <tr
-                  className="hover:bg-slate-50"
-                  data-supplier-name="Rajesh Gold Traders"
-                  data-supplier-email="rajesh@goldtraders.com"
-                >
-                  <td className="px-6 py-4 text-sm text-slate-600">1</td>
-                  <td className="px-6 py-4 text-sm font-medium text-slate-800">
-                    Rajesh Gold Traders
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">
-                    rajesh@goldtraders.com
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">
-                    +91 98765 43210
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusChip("Active")}`}
+        {/* <!-- Table --> */}
+        {loading ? (
+          <TableSkeleton />
+        ) : (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full" id="suppliersTable">
+                <thead>
+                  <tr className="bg-slate-50">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      Supplier Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      Phone
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      Created At
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {data?.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      className="hover:bg-slate-50"
+                      data-supplier-name="Rajesh Gold Traders"
+                      data-supplier-email="rajesh@goldtraders.com"
                     >
-                      Active
-                    </span>
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusChip("Inactive")}`}
-                    >
-                      Inactive
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-500">
-                    {formatDate("2026-02-26T16:31:08.763Z")}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <EditSupplierDialog supplierId={1} />
-                      <DelSupplierDialog supplierId={1} />
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium text-slate-800">
+                        {item?.supplier_name}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {item?.email}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {item?.phone}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusChip(item.status ? "Active" : "Inactive")}`}
+                        >
+                          {item.status ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-500">
+                        {formatDate(item?.created_at)}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <EditSupplierDialog
+                            supplierId={item?.id}
+                            supplierData={item}
+                          />
+                          <DelSupplierDialog supplierId={item?.id} />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {/* <!-- Pagination --> */}
-          <Pagination
-            displayButtons={5}
-            total={{ items: 100, pages: 10 }}
-            onPage={handlePage}
-            title="suppliers"
-          />
-        </div>
+            {/* <!-- Pagination --> */}
+            <Pagination
+              displayButtons={5}
+              total={paramsData?.total}
+              onPage={handlePage}
+              title="suppliers"
+            />
+          </div>
+        )}
       </div>
     </main>
   );

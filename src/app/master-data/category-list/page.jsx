@@ -9,7 +9,7 @@ import EditMetalDialog from "@/components/dialog/metals/EditMetalDialog";
 import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
 import { formatDate } from "@/constants/appConfig";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import EditCategoryDialog from "@/components/dialog/category/EditCategoryDialog";
 
 const initialStateParams = {
@@ -44,40 +44,33 @@ export default function CategoryList() {
   useEffect(() => {
     if (!isHydrated) return;
 
-    const params = new URLSearchParams(searchParams.toString());
-    // console.log("params: ", params);
+    const params = new URLSearchParams();
 
     Object.entries(apiParams).forEach(([key, value]) => {
       if (value) {
         params.set(key, value);
-      } else {
-        params.delete(key);
       }
     });
 
     const newQuery = params.toString();
-    const currentQuery = searchParams.toString();
-
-    if (newQuery !== currentQuery) {
-      router.replace(`?${newQuery}`, { scroll: false });
-    }
-  }, [apiParams, router, searchParams, isHydrated]);
+    router.replace(`?${newQuery}`, { scroll: false });
+  }, [apiParams, router, isHydrated]);
 
   // Handle Inputs
-  const handleSearch = (value) => {
+  const handleSearch = useCallback((value) => {
     setApiParams((prev) => ({
       ...prev,
       search: value,
       page: 1,
     }));
-  };
+  }, []);
 
-  const handlePage = (page) => {
+  const handlePage = useCallback((page) => {
     setApiParams((prev) => ({
       ...prev,
       page,
     }));
-  };
+  }, []);
 
   if (false) {
     return <MasterDataSkeleton />;

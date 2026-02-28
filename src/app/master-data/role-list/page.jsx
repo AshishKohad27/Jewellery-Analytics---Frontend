@@ -59,24 +59,17 @@ function RoleList() {
   useEffect(() => {
     if (!isHydrated) return;
 
-    const params = new URLSearchParams(searchParams.toString());
-    // console.log("params: ", params);
+    const params = new URLSearchParams();
 
     Object.entries(apiParams).forEach(([key, value]) => {
       if (value) {
         params.set(key, value);
-      } else {
-        params.delete(key);
       }
     });
 
     const newQuery = params.toString();
-    const currentQuery = searchParams.toString();
-
-    if (newQuery !== currentQuery) {
-      router.replace(`?${newQuery}`, { scroll: false });
-    }
-  }, [apiParams, router, searchParams, isHydrated]);
+    router.replace(`?${newQuery}`, { scroll: false });
+  }, [apiParams, router, isHydrated]);
 
   // Handle Inputs
   const handleSearch = useCallback((value) => {
@@ -95,12 +88,12 @@ function RoleList() {
   }, []);
 
   useEffect(() => {
-    // console.log("apiParams: ", apiParams);
+    console.log("apiParams: ", apiParams);
   }, [apiParams]);
 
   useEffect(() => {
     dispatch(GetRoles(apiParams));
-  }, []);
+  }, [apiParams,dispatch]);
 
   useEffect(() => {
     console.log({
