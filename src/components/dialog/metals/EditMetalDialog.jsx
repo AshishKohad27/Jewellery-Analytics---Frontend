@@ -27,8 +27,8 @@ export default function EditMetalDialog({ metalId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("metalId: ", metalId);
-    console.log("formData: ", formData);
+    // console.log("metalId: ", metalId);
+    // console.log("formData: ", formData);
   };
 
   return (

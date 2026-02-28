@@ -8,7 +8,7 @@ import {
 
 export default function DelRoleDialog({ roleId }) {
   const handleDel = () => {
-    console.log("roleId: ", roleId);
+    // console.log("roleId: ", roleId);
   };
   return (
     <Dialog>

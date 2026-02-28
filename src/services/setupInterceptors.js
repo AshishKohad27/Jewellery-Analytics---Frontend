@@ -5,7 +5,7 @@ let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-    console.log("processQueue")
+    // console.log("processQueue")
     failedQueue.forEach(prom => {
         if (error) prom.reject(error);
         else prom.resolve(token);
@@ -26,7 +26,7 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
     response => response,
     async error => {
-        console.log('error: ', error);
+        // console.log('error: ', error);
 
         const originalRequest = error.config;
 

@@ -57,7 +57,7 @@ export const getStatusChipColor = (status) => {
 }
 
 export const getStatusChip = (status) => {
-    console.log('status: ', STATUS_COLORS[status].bg);
+    // console.log('status: ', STATUS_COLORS[status].bg);
     return STATUS_COLORS[status]
         ? `${STATUS_COLORS[status].bg} ${STATUS_COLORS[status].text}`
         : `${DEFAULT_STATUS_COLOR[status].bg} ${DEFAULT_STATUS_COLOR[status].text}`;

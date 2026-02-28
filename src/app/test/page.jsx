@@ -48,7 +48,7 @@ export default function Test() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("data:", data);
+    // console.log("data:", data);
   }, [loading]);
   // ---- Fetch Data on Mount ----
   useEffect(() => {

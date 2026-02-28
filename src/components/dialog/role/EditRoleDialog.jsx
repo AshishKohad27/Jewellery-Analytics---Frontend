@@ -29,8 +29,8 @@ export default function EditRoleDialog({ roleId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("roleId: ", roleId);
-    console.log("formData: ", formData);
+    // console.log("roleId: ", roleId);
+    // console.log("formData: ", formData);
   };
 
   return (

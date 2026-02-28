@@ -8,7 +8,7 @@ import {
 
 export default function DelMetalDialog({ metalId }) {
   const handleDel = () => {
-    console.log("metalId: ", metalId);
+    // console.log("metalId: ", metalId);
   };
   return (
     <Dialog>

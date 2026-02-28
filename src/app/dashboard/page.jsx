@@ -22,7 +22,7 @@ export default function Dashboard() {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log({
+    // console.log({
       loading,
       error,
       data,

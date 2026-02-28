@@ -29,7 +29,7 @@ export default function AddRoleDialog() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("formData: ", formData);
+    // console.log("formData: ", formData);
   };
 
   return (

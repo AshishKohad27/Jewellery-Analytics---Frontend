@@ -36,7 +36,7 @@ export default function Users() {
     if (!isHydrated) return;
 
     const params = new URLSearchParams(searchParams.toString());
-    console.log("params: ", params);
+    // console.log("params: ", params);
 
     Object.entries(apiParams).forEach(([key, value]) => {
       if (value) {

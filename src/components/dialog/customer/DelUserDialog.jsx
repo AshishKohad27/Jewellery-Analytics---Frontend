@@ -8,7 +8,7 @@ import {
 
 export default function DelUserDialog({ userId }) {
   const handleDel = () => {
-    console.log("userId: ", userId);
+    // console.log("userId: ", userId);
   };
   return (
     <Dialog>

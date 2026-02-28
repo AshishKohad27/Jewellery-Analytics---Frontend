@@ -8,7 +8,7 @@ import {
 
 export default function DelSupplierDialog({ supplierId }) {
   const handleDel = (supplierId) => {
-    console.log("supplierId: ", supplierId);
+    // console.log("supplierId: ", supplierId);
   };
   return (
     <Dialog>

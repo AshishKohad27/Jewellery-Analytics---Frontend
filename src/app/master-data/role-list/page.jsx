@@ -9,7 +9,7 @@ import { formatDate } from "@/constants/appConfig";
 import { getStatusChip } from "@/constants/colorUtils/statusColor";
 import { GetRoles } from "@/redux/role/role.action";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function RolesPermissionsLayout() {
@@ -60,7 +60,7 @@ function RoleList() {
     if (!isHydrated) return;
 
     const params = new URLSearchParams(searchParams.toString());
-    console.log("params: ", params);
+    // console.log("params: ", params);
 
     Object.entries(apiParams).forEach(([key, value]) => {
       if (value) {
@@ -79,43 +79,43 @@ function RoleList() {
   }, [apiParams, router, searchParams, isHydrated]);
 
   // Handle Inputs
-  const handleSearch = (value) => {
+  const handleSearch = useCallback((value) => {
     setApiParams((prev) => ({
       ...prev,
       search: value,
       page: 1,
     }));
-  };
+  }, []);
 
-  const handlePage = (page) => {
+  const handlePage = useCallback((page) => {
     setApiParams((prev) => ({
       ...prev,
       page,
     }));
-  };
+  }, []);
 
-  // useEffect(() => {
-  //   console.log("apiParams: ", apiParams);
-  // }, [apiParams]);
+  useEffect(() => {
+    // console.log("apiParams: ", apiParams);
+  }, [apiParams]);
 
-  // useEffect(() => {
-  //   dispatch(GetRoles(apiParams));
-  // }, []);
+  useEffect(() => {
+    dispatch(GetRoles(apiParams));
+  }, []);
 
-  // useEffect(() => {
-  //   console.log({
-  //     loading,
-  //     error,
-  //     successMessage,
-  //     errorMessage,
-  //     data,
-  //     paramsData,
-  //   });
-  // }, [loading, error]);
+  useEffect(() => {
+    // console.log({
+      loading,
+      error,
+      successMessage,
+      errorMessage,
+      data,
+      paramsData,
+    });
+  }, [loading, error]);
 
-  // if (loading) {
-  //   return <MasterDataSkeleton outerContainer={false} />;
-  // }
+  if (loading) {
+    return <MasterDataSkeleton outerContainer={false} />;
+  }
 
   return (
     <>

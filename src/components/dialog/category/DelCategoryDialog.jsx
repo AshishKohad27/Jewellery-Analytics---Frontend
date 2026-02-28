@@ -8,7 +8,7 @@ import {
 
 export default function DelCategoryDialog({ categoryId }) {
   const handleDel = () => {
-    console.log("categoryId: ", categoryId);
+    // console.log("categoryId: ", categoryId);
   };
   return (
     <Dialog>

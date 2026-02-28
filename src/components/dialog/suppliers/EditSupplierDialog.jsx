@@ -26,8 +26,8 @@ export default function EditSupplierDialog({ supplierId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("supplierId: ", supplierId);
-    console.log("formData: ", formData);
+    // console.log("supplierId: ", supplierId);
+    // console.log("formData: ", formData);
   };
 
   return (

@@ -29,8 +29,8 @@ export default function EditCategoryDialog({ categoryId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("categoryId: ", categoryId);
-    console.log("formData: ", formData);
+    // console.log("categoryId: ", categoryId);
+    // console.log("formData: ", formData);
   };
 
   return (
