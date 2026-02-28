@@ -103,7 +103,7 @@ function RoleList() {
   }, []);
 
   useEffect(() => {
-    // console.log({
+    console.log({
       loading,
       error,
       successMessage,

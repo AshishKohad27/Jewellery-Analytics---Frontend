@@ -15,12 +15,12 @@ export default function SearchBar({
   }, [searchQuery]);
 
   // Debounce logic
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onSearch(search.trim());
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [search, onSearch]);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     onSearch(search.trim());
+  //   }, 500);
+  //   return () => clearTimeout(timer);
+  // }, [search, onSearch]);
 
   return (
     <div
