@@ -1,9 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function MasterDataSkeleton() {
+export default function MasterDataSkeleton({ outerContainer = true }) {
   return (
-    <main className="lg:ml-64 pt-16 min-h-screen">
-      <div className="p-4 lg:p-8">
+    <main
+      className={`${outerContainer ? "lg:ml-64 pt-16 min-h-screen" : null}`}
+    >
+      <div className={`${outerContainer ? "p-4 lg:p-8" : null}`}>
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div className="space-y-2">

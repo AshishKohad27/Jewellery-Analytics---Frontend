@@ -4,10 +4,13 @@ import SearchBar from "@/components/dataTable/SearchBar";
 import AddRoleDialog from "@/components/dialog/role/AddRoleDialog";
 import DelRoleDialog from "@/components/dialog/role/DelRoleDialog";
 import EditRoleDialog from "@/components/dialog/role/EditRoleDialog";
+import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
 import { formatDate } from "@/constants/appConfig";
 import { getStatusChip } from "@/constants/colorUtils/statusColor";
+import { GetRoles } from "@/redux/role/role.action";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function RolesPermissionsLayout() {
   return (
@@ -22,7 +25,7 @@ export default function RolesPermissionsLayout() {
 const initialStateParams = {
   search: "",
   page: 1,
-  limit: 12,
+  limit: 10,
 };
 
 function RoleList() {
@@ -30,6 +33,11 @@ function RoleList() {
   const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // retrive data
+  const { loading, error, successMessage, errorMessage, data, paramsData } =
+    useSelector((store) => store.role);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isHydrated) return;
@@ -86,9 +94,28 @@ function RoleList() {
     }));
   };
 
-  if (false) {
-    return <MasterDataSkeleton />;
-  }
+  // useEffect(() => {
+  //   console.log("apiParams: ", apiParams);
+  // }, [apiParams]);
+
+  // useEffect(() => {
+  //   dispatch(GetRoles(apiParams));
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log({
+  //     loading,
+  //     error,
+  //     successMessage,
+  //     errorMessage,
+  //     data,
+  //     paramsData,
+  //   });
+  // }, [loading, error]);
+
+  // if (loading) {
+  //   return <MasterDataSkeleton outerContainer={false} />;
+  // }
 
   return (
     <>

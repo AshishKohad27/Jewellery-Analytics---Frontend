@@ -18,7 +18,7 @@ export default function Pagination({
 
   useEffect(() => {
     onPage?.(page); // notify parent
-  }, [page]);
+  }, [page, onPage]);
 
   const pages = useMemo(() => {
     const half = Math.floor(displayButtons / 2);

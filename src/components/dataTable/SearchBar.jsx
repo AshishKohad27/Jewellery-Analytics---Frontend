@@ -20,7 +20,7 @@ export default function SearchBar({
       onSearch(search.trim());
     }, 500);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, onSearch]);
 
   return (
     <div
