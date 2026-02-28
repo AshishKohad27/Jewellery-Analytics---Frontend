@@ -2,13 +2,15 @@
 
 import Pagination from "@/components/dataTable/Pagination";
 import SearchBar from "@/components/dataTable/SearchBar";
+import AddCategoryDialog from "@/components/dialog/category/AddCategoryDialog";
 import AddMetalDialog from "@/components/dialog/metals/AddMetalDialog";
-import DelMetalDialog from "@/components/dialog/metals/DelMetalDialog";
+import DelCategoryDialog from "@/components/dialog/category/DelCategoryDialog";
 import EditMetalDialog from "@/components/dialog/metals/EditMetalDialog";
 import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
 import { formatDate } from "@/constants/appConfig";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import EditCategoryDialog from "@/components/dialog/category/EditCategoryDialog";
 
 const initialStateParams = {
   search: "",
@@ -16,7 +18,7 @@ const initialStateParams = {
   limit: 12,
 };
 
-export default function MetalList() {
+export default function CategoryList() {
   const [apiParams, setApiParams] = useState(initialStateParams);
   const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
@@ -87,14 +89,12 @@ export default function MetalList() {
         {/* <!-- Page Header --> */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Metals</h1>
-            <p className="text-slate-500 mt-1">
-              Manage metal types for jewellery items
-            </p>
+            <h1 className="text-2xl font-bold text-slate-800">Categories</h1>
+            <p className="text-slate-500 mt-1">Manage jewellery item categories</p>
           </div>
           <div className="flex items-center gap-3">
             <button
-              // onclick="document.getElementById('bulkImportModal').classList.remove('hidden')"
+             
               className="px-4 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
             >
               <svg
@@ -108,35 +108,34 @@ export default function MetalList() {
                   strokeLinejoin="round"
                   strokeWidth="2"
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                />
+                ></path>
               </svg>
               Bulk Import
             </button>
-
-            <AddMetalDialog />
+            <AddCategoryDialog />
           </div>
         </div>
 
         {/* <!-- Stats Cards --> */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Total Metals</p>
-            <p className="text-2xl font-bold text-slate-800">5</p>
+            <p className="text-sm text-slate-500 mb-1">Total Categories</p>
+            <p className="text-2xl font-bold text-slate-800">8</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Metal Codes</p>
-            <p className="text-2xl font-bold text-slate-800">AU, AG, PT, RG, WG</p>
+            <p className="text-sm text-slate-500 mb-1">Active Categories</p>
+            <p className="text-2xl font-bold text-emerald-600">7</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Recently Added</p>
-            <p className="text-2xl font-bold text-slate-800">White Gold</p>
+            <p className="text-sm text-slate-500 mb-1">Inactive Categories</p>
+            <p className="text-2xl font-bold text-red-600">1</p>
           </div>
         </div>
 
         {/* <!-- Search --> */}
         <SearchBar
           onSearch={handleSearch}
-          placeholder="Search by metal name or code..."
+          placeholder="Search by category name or code..."
         />
 
         {/* <!-- Table --> */}
@@ -150,13 +149,16 @@ export default function MetalList() {
                     ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Metal Name
+                    Category Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Metal Code
+                    Category Code
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
                     Description
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
+                    Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
                     Created At
@@ -167,22 +169,32 @@ export default function MetalList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                <tr className="hover:bg-slate-50">
+                <tr
+                  className="hover:bg-slate-50"
+                  data-name="Necklace"
+                  data-code="NEC"
+                >
                   <td className="px-6 py-4 text-sm text-slate-600">1</td>
                   <td className="px-6 py-4 text-sm font-medium text-slate-800">
-                    Gold
+                    Necklace
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">AU</td>
+                  <td className="px-6 py-4 text-sm text-slate-600">NEC</td>
                   <td className="px-6 py-4 text-sm text-slate-600">
-                    Pure gold metal
+                    Necklaces and chains worn around neck
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-medium">
+                      Active
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500">
+                    {" "}
                     {formatDate("2026-02-26T16:31:08.763Z")}
                   </td>
                   <td className="px-6 py-4 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <EditMetalDialog />
-                      <DelMetalDialog />
+                      <EditCategoryDialog />
+                      <DelCategoryDialog />
                     </div>
                   </td>
                 </tr>
@@ -195,7 +207,7 @@ export default function MetalList() {
             displayButtons={5}
             total={{ items: 100, pages: 10 }}
             onPage={handlePage}
-            title="metals"
+            title="categories"
           />
         </div>
       </div>

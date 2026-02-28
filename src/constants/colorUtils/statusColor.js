@@ -1,6 +1,6 @@
 export const STATUS_COLORS = {
     Active: {
-           hex: "#10B981",
+        hex: "#10B981",
         bg: "bg-emerald-100",
         text: "text-emerald-800",
     },
@@ -49,6 +49,12 @@ const DEFAULT_STATUS_COLOR = {
 
 export const getStatusColor = (status) =>
     STATUS_COLORS[status] || DEFAULT_STATUS_COLOR;
+
+export const getStatusChipColor = (status) => {
+    return STATUS_COLORS[status]
+        ? `${STATUS_COLORS[status].text}`
+        : `${DEFAULT_STATUS_COLOR[status].text}`;
+}
 
 export const getStatusChip = (status) => {
     console.log('status: ', STATUS_COLORS[status].bg);
