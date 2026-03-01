@@ -5,13 +5,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DeleteCustomer } from "@/redux/customer/customer.action";
+import { toggleCustomerLoading } from "@/redux/customer/customer.slice";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-export default function DelUserDialog({ userId }) {
+export default function DelCustomerDialog({ customerData }) {
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
   const handleDel = () => {
-    // console.log("userId: ", userId);
+    dispatch(DeleteCustomer({ customerId: customerData?.id }));
+    dispatch(toggleCustomerLoading());
+    setOpen(false);
   };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded">
           <svg
@@ -35,9 +45,9 @@ export default function DelUserDialog({ userId }) {
         showCloseButton={false}
       >
         {/* Header */}
-        <div className="flex* items-center justify-between p-6 border-b border-slate-200 hidden">
+        <div className="flex items-center justify-between p-6 border-b border-slate-200 hidden">
           <DialogTitle className="text-lg font-semibold text-slate-800">
-            Deactivate User
+            Deactivate Customer
           </DialogTitle>
           <DialogClose asChild>
             <button className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
@@ -77,18 +87,14 @@ export default function DelUserDialog({ userId }) {
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-slate-800 text-center">
-              Deactivate User
+              Deactivate Customer
             </h3>
             <p className="text-sm text-slate-500 text-center mt-2">
-              Are you sure you want to deactivate this User?
+              Are you sure you want to deactivate this customer?
             </p>
-            <p
-              className="text-sm font-medium text-slate-700 text-center mt-1"
-              id="deleteUserName"
-            >
-              "Ramesh Kumar"
+            <p className="text-sm font-medium text-slate-700 text-center mt-1">
+              "{customerData?.customer_name}"
             </p>
-            <input type="hidden" id="deleteId" value={userId} />
           </div>
           {/* Footer */}
           <div className="flex items-center justify-center gap-3 p-6 border-t border-slate-200">

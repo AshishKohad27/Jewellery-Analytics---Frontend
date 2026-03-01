@@ -6,18 +6,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
+import { UpdateCustomer } from "@/redux/customer/customer.action";
+import { toggleCustomerLoading } from "@/redux/customer/customer.slice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const initialState = {
-  name: "Ashish Kohad",
-  email: "ashish.superadmin@example.com",
-  password_hash: "Password@123",
-  role_id: 1,
-  status: true,
-};
+const getFormData = (data) => ({
+  customer_name: data?.customer_name || "",
+  phone: data?.phone || "",
+  email: data?.email || "",
+  status: data?.status || false,
+});
 
-export default function AddUserDialog() {
-  const [formData, setFormData] = useState(initialState);
+export default function EditCustomerDialog({ customerData }) {
+  const [formData, setFormData] = useState(getFormData(customerData));
+  const [open, setOpen] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { value, name, type, checked } = e.target;
@@ -30,11 +35,21 @@ export default function AddUserDialog() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("formData: ", formData);
+    dispatch(UpdateCustomer({ data: formData, customerId: customerData?.id }));
+    dispatch(toggleCustomerLoading());
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (isOpen) {
+          setFormData(getFormData(customerData));
+        }
+        setOpen(isOpen);
+      }}
+    >
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded">
           <svg
@@ -60,7 +75,7 @@ export default function AddUserDialog() {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <DialogTitle className="text-lg font-semibold text-slate-800">
-            Edit User
+            Edit Customer
           </DialogTitle>
           <DialogClose asChild>
             <button className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
@@ -86,67 +101,44 @@ export default function AddUserDialog() {
           <div className="p-6 space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Username <span className="text-red-500">*</span>
+                Customer Name <span className="text-red-500">*</span>
               </label>
               <input
                 onChange={handleChange}
-                value={formData?.name}
-                name="name"
+                value={formData?.customer_name}
+                name="customer_name"
                 type="text"
-                id="addUsername"
-                required=""
-                placeholder="Enter username"
+                required
+                placeholder="Enter customer name"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Email <span className="text-red-500">*</span>
+                Phone <span className="text-red-500">*</span>
+              </label>
+              <input
+                onChange={handleChange}
+                value={formData?.phone}
+                name="phone"
+                type="tel"
+                required
+                placeholder="Enter phone number"
+                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Email
               </label>
               <input
                 onChange={handleChange}
                 value={formData?.email}
                 name="email"
                 type="email"
-                id="addEmail"
-                required=""
-                placeholder="user@jewelleryshop.com"
+                placeholder="Enter email address"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Password <span className="text-red-500">*</span>
-              </label>
-              <input
-                onChange={handleChange}
-                value={formData?.password_hash}
-                name="password_hash"
-                type="password"
-                id="addPassword"
-                required=""
-                placeholder="Enter password"
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Role <span className="text-red-500">*</span>
-              </label>
-              <select
-                onChange={handleChange}
-                value={formData?.role_id}
-                name="role_id"
-                id="addRoleId"
-                required=""
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm text-slate-600"
-              >
-                <option value="">Select role</option>
-                <option value="1">Owner</option>
-                <option value="2">Manager</option>
-                <option value="3">Sales Executive</option>
-                <option value="4">Inventory Manager</option>
-              </select>
             </div>
 
             {/* <!-- Status Toggle --> */}
@@ -156,7 +148,7 @@ export default function AddUserDialog() {
                   Status
                 </label>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Set role as active or inactive
+                  Set customer as active or inactive
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -165,13 +157,11 @@ export default function AddUserDialog() {
                   value={formData?.status}
                   name="status"
                   type="checkbox"
-                  id="addStatus"
                   checked={formData?.status}
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-500"></div>
                 <span
-                  id="addStatusLabel"
                   className={`ml-3 text-sm font-medium ${formData?.status ? getStatusChipColor("Active") : getStatusChipColor("Inactive")}`}
                 >
                   {formData?.status ? "Active" : "Inactive"}
@@ -195,7 +185,7 @@ export default function AddUserDialog() {
               type="submit"
               className="px-4 py-2.5 bg-gold-500 text-white hover:bg-gold-600 rounded-lg text-sm font-medium transition-colors"
             >
-              Update User
+              Update Customer
             </button>
           </div>
         </form>

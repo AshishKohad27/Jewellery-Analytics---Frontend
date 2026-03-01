@@ -5,7 +5,6 @@ import SearchBar from "@/components/dataTable/SearchBar";
 import AddMetalDialog from "@/components/dialog/metals/AddMetalDialog";
 import DelMetalDialog from "@/components/dialog/metals/DelMetalDialog";
 import EditMetalDialog from "@/components/dialog/metals/EditMetalDialog";
-import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
 import StatsCardsSkeleton from "@/components/skeleton/StatsCardsSkeleton";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { formatDate } from "@/constants/appConfig";

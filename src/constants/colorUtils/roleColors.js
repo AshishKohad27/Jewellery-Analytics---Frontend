@@ -55,7 +55,6 @@ export const getRoleBgColor = (roleName) => {
 
 export const getRoleChip = (roleName) => {
   roleName = roleName.toLowerCase();
-  console.log('roleName: ', roleName);
   return ROLE_COLORS[roleName]
     ? `${ROLE_COLORS[roleName].text} ${ROLE_COLORS[roleName].bg}`
     : `${DEFAULT_COLOR.text} ${DEFAULT_COLOR.bg}`;

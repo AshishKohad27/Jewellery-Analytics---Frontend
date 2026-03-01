@@ -7,6 +7,7 @@ import supplierSlice from '@/redux/supplier/supplier.slice';
 import metalSlice from '@/redux/metal/metal.slice';
 import categorySlice from '@/redux/category/category.slice';
 import userSlice from '@/redux/user/user.slice';
+import customerSlice from '@/redux/customer/customer.slice';
 import notificationSlice from '@/redux/notification/notification.slice';
 import notificationMiddleware from '@/redux/middleware/notificationMiddleware';
 
@@ -20,6 +21,7 @@ export const store = configureStore({
         metal: metalSlice,
         category: categorySlice,
         user: userSlice,
+        customer: customerSlice,
         notification: notificationSlice,
     },
     middleware: (getDefaultMiddleware) =>
