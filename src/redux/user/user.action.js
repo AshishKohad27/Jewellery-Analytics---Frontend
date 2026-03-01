@@ -3,29 +3,26 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "@/services/apiClient";
 
-let BASE_URL = "/roles";
+let BASE_URL = "/users";
 
-export const GetRoles = createAsyncThunk(
-    "get/roles",
-    async (payload = {}, { rejectWithValue }) => {
-        console.log("get/roles:")
+export const GetUsers = createAsyncThunk(
+    "get/users",
+    async (payload, { rejectWithValue }) => {
         try {
-            const { search = "", page = 1, limit = 10 } = payload;
             const response = await apiClient.get(
-                `${BASE_URL}/?search=${search}&page=${page}&limit=${limit}`
+                `${BASE_URL}/?search=${payload.search}&page=${payload.page}&limit=${payload.limit}`,
             );
-            console.log('response: ', response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(
-                error?.response?.data?.message || "Something went wrong GetRoles",
+                error?.response?.data?.message || "Something went wrong GetUsers",
             );
         }
     },
 );
 
-export const GetRoleStats = createAsyncThunk(
-    "get/role/stats",
+export const GetUserStats = createAsyncThunk(
+    "get/user/stats",
     async (_, { rejectWithValue }) => {
         try {
             const response = await apiClient.get(`${BASE_URL}/stats`);
@@ -33,54 +30,54 @@ export const GetRoleStats = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(
                 error?.response?.data?.message ||
-                "Something went wrong GetRoleStats",
+                "Something went wrong GetUserStats",
             );
         }
     },
 );
 
-export const CreateRole = createAsyncThunk(
-    "create/role",
+export const CreateUser = createAsyncThunk(
+    "create/user",
     async (payload, { rejectWithValue }) => {
         try {
             const response = await apiClient.post(`${BASE_URL}/`, payload.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(
-                error?.response?.data?.message || "Something went wrong CreateRole",
+                error?.response?.data?.message || "Something went wrong CreateUser",
             );
         }
     },
 );
 
-export const UpdateRole = createAsyncThunk(
-    "update/role",
+export const UpdateUser = createAsyncThunk(
+    "update/user",
     async (payload, { rejectWithValue }) => {
         try {
             const response = await apiClient.put(
-                `${BASE_URL}/${payload.roleId}`,
+                `${BASE_URL}/${payload.userId}`,
                 payload.data,
             );
             return response.data;
         } catch (error) {
             return rejectWithValue(
-                error?.response?.data?.message || "Something went wrong UpdateRole",
+                error?.response?.data?.message || "Something went wrong UpdateUser",
             );
         }
     },
 );
 
-export const DeleteRole = createAsyncThunk(
-    "delete/role",
+export const DeleteUser = createAsyncThunk(
+    "delete/user/",
     async (payload, { rejectWithValue }) => {
         try {
             const response = await apiClient.delete(
-                `${BASE_URL}/${payload.roleId}`,
+                `${BASE_URL}/${payload.userId}`,
             );
             return response.data;
         } catch (error) {
             return rejectWithValue(
-                error?.response?.data?.message || "Something went wrong DeleteRole",
+                error?.response?.data?.message || "Something went wrong DeleteUser",
             );
         }
     },

@@ -6,18 +6,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
-import { useState } from "react";
+import { GetRoles } from "@/redux/role/role.action";
+import { CreateUser } from "@/redux/user/user.action";
+import { toggleUserLoading } from "@/redux/user/user.slice";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialState = {
-  name: "Ashish Kohad",
-  email: "ashish.superadmin@example.com",
-  password_hash: "Password@123",
+  name: "",
+  email: "",
+  password_hash: "",
   role_id: 1,
   status: true,
 };
 
-export default function AddUserDialog() {
+export default function AddUserDialog({ roleData }) {
   const [formData, setFormData] = useState(initialState);
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { error } = useSelector((store) => store.user);
 
   const handleChange = (e) => {
     const { value, name, type, checked } = e.target;
@@ -28,13 +35,23 @@ export default function AddUserDialog() {
     }));
   };
 
+  useEffect(() => {
+    console.log("add modal:", roleData);
+  }, [roleData]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("formData: ", formData);
+    dispatch(CreateUser({ data: formData }));
+    dispatch(toggleUserLoading());
+
+    if (!error) {
+      setFormData(initialState);
+      setOpen(false);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="px-4 py-2.5 bg-gold-500 text-white hover:bg-gold-600 rounded-lg text-sm font-medium flex items-center gap-2">
           <svg
@@ -142,11 +159,14 @@ export default function AddUserDialog() {
                 required=""
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm text-slate-600"
               >
-                <option value="">Select role</option>
-                <option value="1">Owner</option>
-                <option value="2">Manager</option>
-                <option value="3">Sales Executive</option>
-                <option value="4">Inventory Manager</option>
+                <option value="">Select role</option>;
+                {roleData
+                  ?.filter((role) => role?.isActive)
+                  .map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
               </select>
             </div>
 

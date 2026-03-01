@@ -6,18 +6,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
+import { UpdateUser } from "@/redux/user/user.action";
+import { toggleUserLoading } from "@/redux/user/user.slice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const initialState = {
-  name: "Ashish Kohad",
-  email: "ashish.superadmin@example.com",
-  password_hash: "Password@123",
-  role_id: 1,
-  status: true,
-};
+const getFormData = (data) => ({
+  name: data?.name || "",
+  email: data?.email || "",
+  role_id: data?.role_id || 0,
+  status: data?.status || false,
+});
+export default function AddUserDialog({ userData, roleData }) {
+  const [formData, setFormData] = useState(getFormData(userData));
+  const [open, setOpen] = useState(false);
 
-export default function AddUserDialog() {
-  const [formData, setFormData] = useState(initialState);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { value, name, type, checked } = e.target;
@@ -30,11 +34,21 @@ export default function AddUserDialog() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("formData: ", formData);
+    dispatch(UpdateUser({ data: formData, userId: userData?.id }));
+    dispatch(toggleUserLoading());
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (isOpen) {
+          setFormData(getFormData(userData));
+        }
+        setOpen(isOpen);
+      }}
+    >
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded">
           <svg
@@ -114,7 +128,7 @@ export default function AddUserDialog() {
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm"
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Password <span className="text-red-500">*</span>
               </label>
@@ -128,7 +142,7 @@ export default function AddUserDialog() {
                 placeholder="Enter password"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm"
               />
-            </div>
+            </div> */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Role <span className="text-red-500">*</span>
@@ -142,10 +156,13 @@ export default function AddUserDialog() {
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-sm text-slate-600"
               >
                 <option value="">Select role</option>
-                <option value="1">Owner</option>
-                <option value="2">Manager</option>
-                <option value="3">Sales Executive</option>
-                <option value="4">Inventory Manager</option>
+                {roleData
+                  ?.filter((role) => role?.isActive)
+                  .map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
               </select>
             </div>
 
