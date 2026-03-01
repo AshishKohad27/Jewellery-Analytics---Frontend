@@ -6,17 +6,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
+import { CreateRole } from "@/redux/role/role.action";
+import { toggleRoleLoading } from "@/redux/role/role.slice";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialState = {
-  name: "Super Admin",
-  description:
-    "Full system access, including settings, users, roles, and reports",
+  name: "",
+  description: "",
   isActive: true,
 };
 
 export default function AddRoleDialog() {
   const [formData, setFormData] = useState(initialState);
+
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { error } = useSelector((store) => store.role);
 
   const handleChange = (e) => {
     const { value, name, type, checked } = e.target;
@@ -29,11 +35,17 @@ export default function AddRoleDialog() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("formData: ", formData);
+    dispatch(CreateRole({ data: formData }));
+    dispatch(toggleRoleLoading());
+
+    if (!error) {
+      setFormData(initialState);
+      setOpen(false);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="px-4 py-2.5 bg-gold-500 text-white hover:bg-gold-600 rounded-lg text-sm font-medium flex items-center gap-2">
           <svg

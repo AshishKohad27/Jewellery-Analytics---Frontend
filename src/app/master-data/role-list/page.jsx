@@ -4,12 +4,13 @@ import SearchBar from "@/components/dataTable/SearchBar";
 import AddRoleDialog from "@/components/dialog/role/AddRoleDialog";
 import DelRoleDialog from "@/components/dialog/role/DelRoleDialog";
 import EditRoleDialog from "@/components/dialog/role/EditRoleDialog";
-import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
+import StatsCardsSkeleton from "@/components/skeleton/StatsCardsSkeleton";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { formatDate } from "@/constants/appConfig";
 import { getStatusChip } from "@/constants/colorUtils/statusColor";
-import { GetRoles } from "@/redux/role/role.action";
+import { GetRoles, GetRoleStats } from "@/redux/role/role.action";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function RolesPermissionsLayout() {
@@ -22,42 +23,28 @@ export default function RolesPermissionsLayout() {
   );
 }
 
-const initialStateParams = {
-  search: "",
-  page: 1,
-  limit: 10,
-};
-
 function RoleList() {
-  const [apiParams, setApiParams] = useState(initialStateParams);
-  const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // retrive data
-  const { loading, error, successMessage, errorMessage, data, paramsData } =
-    useSelector((store) => store.role);
+  const [apiParams, setApiParams] = useState(() => ({
+    search: searchParams.get("search") || "",
+    page: Number(searchParams.get("page")) || 1,
+    limit: Number(searchParams.get("limit")) || 10,
+  }));
+
+  const isFirstRender = useRef(true);
+
+  const { loading, data, paramsData, stats, isRoleLoading } = useSelector(
+    (store) => store.role,
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isHydrated) return;
-
-    const paramsFromUrl = {
-      search: searchParams.get("search") || "",
-      page: Number(searchParams.get("page")) || 1,
-      limit: Number(searchParams.get("limit")) || 10,
-    };
-
-    setApiParams((prev) => ({
-      ...prev,
-      ...paramsFromUrl,
-    }));
-
-    setIsHydrated(true);
-  }, [searchParams, isHydrated]);
-
-  useEffect(() => {
-    if (!isHydrated) return;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
     const params = new URLSearchParams();
 
@@ -69,7 +56,7 @@ function RoleList() {
 
     const newQuery = params.toString();
     router.replace(`?${newQuery}`, { scroll: false });
-  }, [apiParams, router, isHydrated]);
+  }, [apiParams, router]);
 
   // Handle Inputs
   const handleSearch = useCallback((value) => {
@@ -88,27 +75,13 @@ function RoleList() {
   }, []);
 
   useEffect(() => {
-    console.log("apiParams: ", apiParams);
-  }, [apiParams]);
-
-  useEffect(() => {
     dispatch(GetRoles(apiParams));
-  }, [apiParams,dispatch]);
+    dispatch(GetRoleStats());
+  }, [apiParams, dispatch, isRoleLoading]);
 
   useEffect(() => {
-    console.log({
-      loading,
-      error,
-      successMessage,
-      errorMessage,
-      data,
-      paramsData,
-    });
-  }, [loading, error]);
-
-  if (loading) {
-    return <MasterDataSkeleton outerContainer={false} />;
-  }
+    console.log({ loading, data, paramsData, stats, isRoleLoading });
+  }, [loading, data, paramsData, stats, isRoleLoading]);
 
   return (
     <>
@@ -126,29 +99,39 @@ function RoleList() {
       </div>
 
       {/* <!-- Stats Cards --> */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <p className="text-sm text-slate-500 mb-1">Total Roles</p>
-          <p id="statTotalRoles" className="text-2xl font-bold text-slate-800">
-            4
-          </p>
+      {loading ? (
+        <StatsCardsSkeleton />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <p className="text-sm text-slate-500 mb-1">Total Roles</p>
+            <p
+              id="statTotalRoles"
+              className="text-2xl font-bold text-slate-800"
+            >
+              {stats?.total}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <p className="text-sm text-slate-500 mb-1">Active Roles</p>
+            <p
+              id="statActiveRoles"
+              className="text-2xl font-bold text-emerald-600"
+            >
+              {stats?.active}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <p className="text-sm text-slate-500 mb-1">Inactive Roles</p>
+            <p
+              id="statInactiveRoles"
+              className="text-2xl font-bold text-red-600"
+            >
+              {stats?.inactive}
+            </p>
+          </div>
         </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <p className="text-sm text-slate-500 mb-1">Active Roles</p>
-          <p
-            id="statActiveRoles"
-            className="text-2xl font-bold text-emerald-600"
-          >
-            3
-          </p>
-        </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <p className="text-sm text-slate-500 mb-1">Inactive Roles</p>
-          <p id="statInactiveRoles" className="text-2xl font-bold text-red-600">
-            1
-          </p>
-        </div>
-      </div>
+      )}
 
       {/* <!-- Search --> */}
       <SearchBar
@@ -157,120 +140,83 @@ function RoleList() {
       />
 
       {/* <!-- Roles Table --> */}
-      {/* <!-- Schema: roles { id, name, description, isActive, created_by, updated_by, created_at, updated_at, users[], rolePermissions[] } --> */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-8">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-slate-50">
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                  ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                  Role Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                  Description
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
-                  Users Count
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                  Created At
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody id="rolesTableBody" className="divide-y divide-slate-100">
-              <tr className="hover:bg-slate-50">
-                <td className="px-6 py-4 text-sm text-slate-600">1</td>
-                <td className="px-6 py-4 text-sm font-medium text-slate-800">
-                  Super Admin
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-600">
-                  Full system access with all permissions
-                </td>
-                <td className="px-6 py-4 text-center">
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusChip("Active")}`}
-                  >
-                    Active
-                  </span>
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusChip("Inactive")}`}
-                  >
-                    Inactive
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-600 text-center">
-                  1
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-500">
-                  {formatDate("2026-02-26T16:31:08.763Z")}
-                </td>
-                <td className="px-6 py-4 text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <button
-                      // onClick="openEditRoleModal(1)"
-                      className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded"
-                      title="Edit"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+      {loading ? (
+        <TableSkeleton />
+      ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-8">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-slate-50">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                    ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                    Role Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                    Description
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
+                    Users Count
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                    Created At
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="rolesTableBody" className="divide-y divide-slate-100">
+                {data?.map((item, index) => (
+                  <tr key={item?.id} className="hover:bg-slate-50">
+                    <td className="px-6 py-4 text-sm text-slate-600">
+                      {index + 1}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-slate-800">
+                      {item?.name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-600">
+                      {item?.description}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusChip(item.isActive ? "Active" : "Inactive")}`}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        ></path>
-                      </svg>
-                    </button>
-                    <button
-                      // onClick="openDeleteRoleModal(1)"
-                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded"
-                      title="Delete"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        ></path>
-                      </svg>
-                    </button>
+                        {item.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-600 text-center">
+                      {item?._count?.users}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-500">
+                      {formatDate(item?.created_at)}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <EditRoleDialog roleData={item} />
+                        <DelRoleDialog roleData={item} />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-                    <EditRoleDialog />
-                    <DelRoleDialog />
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          {/* <!-- Pagination --> */}
+          <Pagination
+            displayButtons={5}
+            total={paramsData?.total}
+            onPage={handlePage}
+            title="roles"
+          />
         </div>
-
-        {/* <!-- Pagination --> */}
-        <Pagination
-          displayButtons={5}
-          total={{ items: 100, pages: 10 }}
-          onPage={handlePage}
-          title="roles"
-        />
-      </div>
+      )}
     </>
   );
 }

@@ -6,7 +6,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
+import { UpdateRole } from "@/redux/role/role.action";
+import { toggleRoleLoading } from "@/redux/role/role.slice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const initialState = {
   name: "Super Admin",
@@ -15,8 +18,17 @@ const initialState = {
   isActive: true,
 };
 
-export default function EditRoleDialog({ roleId }) {
+const getFormData = (data) => ({
+  name: data?.name || "",
+  description: data?.description || "",
+  isActive: data?.isActive || false,
+});
+
+export default function EditRoleDialog({ roleData }) {
   const [formData, setFormData] = useState(initialState);
+  const [open, setOpen] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { value, name, type, checked } = e.target;
@@ -29,12 +41,21 @@ export default function EditRoleDialog({ roleId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("roleId: ", roleId);
-    // console.log("formData: ", formData);
+    dispatch(UpdateRole({ data: formData, roleId: roleData?.id }));
+    dispatch(toggleRoleLoading());
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (isOpen) {
+          setFormData(getFormData(roleData));
+        }
+        setOpen(isOpen);
+      }}
+    >
       <DialogTrigger asChild>
         <button
           className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded"

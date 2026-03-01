@@ -5,13 +5,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DeleteRole } from "@/redux/role/role.action";
+import { toggleRoleLoading } from "@/redux/role/role.slice";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-export default function DelRoleDialog({ roleId }) {
+export default function DelRoleDialog({ roleData }) {
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
   const handleDel = () => {
-    // console.log("roleId: ", roleId);
+    dispatch(DeleteRole({ roleId: roleData?.id }));
+    dispatch(toggleRoleLoading());
+    setOpen(false);
   };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded">
           <svg
@@ -86,9 +96,9 @@ export default function DelRoleDialog({ roleId }) {
               className="text-sm font-medium text-slate-700 text-center mt-1"
               id="deleteRoleName"
             >
-              "Admin"
+              {roleData?.name}
             </p>
-            <input type="hidden" id="deleteId" value={roleId} />
+            <input type="hidden" id="deleteId" value={roleData?.id} />
           </div>
           {/* Footer */}
           <div className="flex items-center justify-center gap-3 p-6 border-t border-slate-200">
