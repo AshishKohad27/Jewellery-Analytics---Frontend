@@ -11,20 +11,20 @@ import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { formatDate } from "@/constants/appConfig";
 import { GetMetals, GetMetalStats } from "@/redux/metal/metal.action";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const initialStateParams = {
-  search: "",
-  page: 1,
-  limit: 12,
-};
-
 export default function MetalList() {
-  const [apiParams, setApiParams] = useState(initialStateParams);
-  const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const [apiParams, setApiParams] = useState(() => ({
+    search: searchParams.get("search") || "",
+    page: Number(searchParams.get("page")) || 1,
+    limit: Number(searchParams.get("limit")) || 10,
+  }));
+
+  const isFirstRender = useRef(true);
 
   const { loading, data, paramsData, stats, isMetalLoading } = useSelector(
     (store) => store.metal,
@@ -32,24 +32,10 @@ export default function MetalList() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isHydrated) return;
-
-    const paramsFromUrl = {
-      search: searchParams.get("search") || "",
-      page: Number(searchParams.get("page")) || 1,
-      limit: Number(searchParams.get("limit")) || 10,
-    };
-
-    setApiParams((prev) => ({
-      ...prev,
-      ...paramsFromUrl,
-    }));
-
-    setIsHydrated(true);
-  }, [searchParams, isHydrated]);
-
-  useEffect(() => {
-    if (!isHydrated) return;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
     const params = new URLSearchParams();
 
@@ -61,7 +47,7 @@ export default function MetalList() {
 
     const newQuery = params.toString();
     router.replace(`?${newQuery}`, { scroll: false });
-  }, [apiParams, router, isHydrated]);
+  }, [apiParams, router]);
 
   // Handle Inputs
   const handleSearch = useCallback((value) => {
