@@ -5,7 +5,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { UpdateMetal } from "@/redux/metal/metal.action";
+import { toggleMetalLoading } from "@/redux/metal/metal.slice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const initialState = {
   metal_name: "Gold",
@@ -13,26 +16,44 @@ const initialState = {
   description: "Precious yellow metal used in jewellery",
 };
 
-export default function EditMetalDialog({ metalId }) {
-  const [formData, setFormData] = useState(initialState);
+const getFormData = (data) => ({
+  metal_name: data?.metal_name || "",
+  metal_code: data?.metal_code || "",
+  description: data?.description || "",
+});
+
+export default function EditMetalDialog({ metalId, metalData }) {
+  const [formData, setFormData] = useState(getFormData(metalData));
+  const [open, setOpen] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { value, name } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "metal_code" ? value.toUpperCase() : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("metalId: ", metalId);
-    // console.log("formData: ", formData);
+    dispatch(UpdateMetal({ data: formData, metalId }));
+    dispatch(toggleMetalLoading());
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (isOpen) {
+          setFormData(getFormData(metalData));
+        }
+        setOpen(isOpen);
+      }}
+    >
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded">
           <svg

@@ -32,9 +32,6 @@ export default function SupplierList() {
 
   const {
     loading,
-    error,
-    successMessage,
-    errorMessage,
     data,
     paramsData,
     stats,
@@ -233,7 +230,7 @@ export default function SupplierList() {
                             supplierId={item?.id}
                             supplierData={item}
                           />
-                          <DelSupplierDialog supplierId={item?.id} />
+                          <DelSupplierDialog supplierData={item} />
                         </div>
                       </td>
                     </tr>

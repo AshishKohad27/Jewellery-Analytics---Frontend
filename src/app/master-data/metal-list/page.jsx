@@ -6,9 +6,13 @@ import AddMetalDialog from "@/components/dialog/metals/AddMetalDialog";
 import DelMetalDialog from "@/components/dialog/metals/DelMetalDialog";
 import EditMetalDialog from "@/components/dialog/metals/EditMetalDialog";
 import MasterDataSkeleton from "@/components/skeleton/MasterDataSkeleton";
+import StatsCardsSkeleton from "@/components/skeleton/StatsCardsSkeleton";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { formatDate } from "@/constants/appConfig";
+import { GetMetals, GetMetalStats } from "@/redux/metal/metal.action";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialStateParams = {
   search: "",
@@ -21,6 +25,11 @@ export default function MetalList() {
   const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const { loading, data, paramsData, stats, isMetalLoading } = useSelector(
+    (store) => store.metal,
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isHydrated) return;
@@ -70,9 +79,14 @@ export default function MetalList() {
     }));
   }, []);
 
-  if (false) {
-    return <MasterDataSkeleton />;
-  }
+  useEffect(() => {
+    dispatch(GetMetals(apiParams));
+    dispatch(GetMetalStats());
+  }, [apiParams, dispatch, isMetalLoading]);
+
+  useEffect(() => {
+    console.log({ loading, data, paramsData, stats, isMetalLoading });
+  }, [isMetalLoading]);
 
   return (
     <main className="lg:ml-64 pt-16 min-h-screen">
@@ -111,20 +125,30 @@ export default function MetalList() {
         </div>
 
         {/* <!-- Stats Cards --> */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Total Metals</p>
-            <p className="text-2xl font-bold text-slate-800">5</p>
+        {loading ? (
+          <StatsCardsSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <p className="text-sm text-slate-500 mb-1">Total Metals</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {stats?.total}
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <p className="text-sm text-slate-500 mb-1">Metal Codes</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {stats?.metalCodes?.map((item) => item.metal_code).join(", ")}
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <p className="text-sm text-slate-500 mb-1">Recently Added</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {stats?.recentlyAddedMetal?.metal_name}
+              </p>
+            </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Metal Codes</p>
-            <p className="text-2xl font-bold text-slate-800">AU, AG, PT, RG, WG</p>
-          </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Recently Added</p>
-            <p className="text-2xl font-bold text-slate-800">White Gold</p>
-          </div>
-        </div>
+        )}
 
         {/* <!-- Search --> */}
         <SearchBar
@@ -133,64 +157,77 @@ export default function MetalList() {
         />
 
         {/* <!-- Table --> */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-          {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full" id="suppliersTable">
-              <thead>
-                <tr className="bg-slate-50">
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Metal Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Metal Code
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Description
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
-                    Created At
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                <tr className="hover:bg-slate-50">
-                  <td className="px-6 py-4 text-sm text-slate-600">1</td>
-                  <td className="px-6 py-4 text-sm font-medium text-slate-800">
-                    Gold
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">AU</td>
-                  <td className="px-6 py-4 text-sm text-slate-600">
-                    Pure gold metal
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-500">
-                    {formatDate("2026-02-26T16:31:08.763Z")}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <EditMetalDialog />
-                      <DelMetalDialog />
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        {loading ? (
+          <TableSkeleton />
+        ) : (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full" id="suppliersTable">
+                <thead>
+                  <tr className="bg-slate-50">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      Metal Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      Metal Code
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      Description
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase">
+                      Created At
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {data?.map((item, index) => (
+                    <tr key={item?.id} className="hover:bg-slate-50">
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium text-slate-800">
+                        {item?.metal_name}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {item?.metal_code}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {item?.description}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-500">
+                        {formatDate(item?.created_at)}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <EditMetalDialog
+                            metalId={item?.id}
+                            metalData={item}
+                          />
+                          <DelMetalDialog metalData={item} />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {/* <!-- Pagination --> */}
-          <Pagination
-            displayButtons={5}
-            total={{ items: 100, pages: 10 }}
-            onPage={handlePage}
-            title="metals"
-          />
-        </div>
+            {/* <!-- Pagination --> */}
+            <Pagination
+              displayButtons={5}
+              total={paramsData?.total}
+              onPage={handlePage}
+              title="metals"
+            />
+          </div>
+        )}
       </div>
     </main>
   );

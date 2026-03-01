@@ -5,13 +5,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DeleteMetal } from "@/redux/metal/metal.action";
+import { toggleMetalLoading } from "@/redux/metal/metal.slice";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-export default function DelMetalDialog({ metalId }) {
+export default function DelMetalDialog({ metalData }) {
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
   const handleDel = () => {
-    // console.log("metalId: ", metalId);
+    dispatch(DeleteMetal({ metalId: metalData?.id }));
+    dispatch(toggleMetalLoading());
+    setOpen(false);
   };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded">
           <svg
@@ -36,11 +46,7 @@ export default function DelMetalDialog({ metalId }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200 hidden">
-          <DialogTitle>
-            <h3 className="text-lg font-semibold text-slate-800">
-              Deactivate Supplier
-            </h3>
-          </DialogTitle>
+          <DialogTitle>Deactivate Metal</DialogTitle>
           <DialogClose asChild>
             <button className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
               <svg
@@ -84,7 +90,7 @@ export default function DelMetalDialog({ metalId }) {
             <p className="text-sm text-slate-500 text-center">
               Are you sure you want to delete this metal?{" "}
               <span id="deleteMetalName" className="font-medium text-slate-700">
-                "Gold"
+                {metalData?.metal_name}
               </span>
             </p>
             <input type="hidden" id="deleteMetalId" value="1" />
@@ -103,7 +109,6 @@ export default function DelMetalDialog({ metalId }) {
             <button
               onClick={handleDel}
               type="button"
-              onclick="document.getElementById('deleteSupplierModal').classList.add('hidden')"
               className="px-4 py-2.5 bg-red-600 text-white hover:bg-red-700 rounded-lg text-sm font-medium transition-colors"
             >
               Confirm Deactivate

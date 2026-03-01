@@ -5,33 +5,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { CreateMetal } from "@/redux/metal/metal.action";
+import { toggleMetalLoading } from "@/redux/metal/metal.slice";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialState = {
-  metal_name: "Gold",
-  metal_code: "GLD",
-  description: "Precious yellow metal used in jewellery",
+  metal_name: "",
+  metal_code: "",
+  description: "",
 };
 
 export default function AddMetalDialog() {
   const [formData, setFormData] = useState(initialState);
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { error } = useSelector((store) => store.metal);
 
   const handleChange = (e) => {
     const { value, name } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "metal_code" ? value.toUpperCase() : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("formData: ", formData);
+    dispatch(CreateMetal({ data: formData }));
+    dispatch(toggleMetalLoading());
+
+    if (!error) {
+      setFormData(initialState);
+      setOpen(false);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="px-4 py-2.5 bg-gold-500 text-white hover:bg-gold-600 rounded-lg text-sm font-medium flex items-center gap-2">
           <svg

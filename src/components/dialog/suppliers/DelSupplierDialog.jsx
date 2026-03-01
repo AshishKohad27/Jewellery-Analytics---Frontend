@@ -10,12 +10,12 @@ import { toggleSupplierLoading } from "@/redux/supplier/supplier.slice";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-export default function DelSupplierDialog({ supplierId }) {
+export default function DelSupplierDialog({ supplierData }) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
   const handleDel = () => {
-    dispatch(DeleteSupplier({ supplierId }));
+    dispatch(DeleteSupplier({ supplierId: supplierData?.id }));
     dispatch(toggleSupplierLoading());
     setOpen(false);
   };
@@ -94,11 +94,15 @@ export default function DelSupplierDialog({ supplierId }) {
                 id="deleteSupplierName"
                 className="font-medium text-slate-700"
               >
-                Rajesh Gold Traders
+                {supplierData?.supplier_name}
               </span>
               ? This action can be reversed later.
             </p>
-            <input type="hidden" id="deleteSupplierId" value={supplierId} />
+            <input
+              type="hidden"
+              id="deleteSupplierId"
+              value={supplierData?.id}
+            />
           </div>
           {/* Footer */}
           <div className="flex items-center justify-end gap-3 p-6 border-t border-slate-200">

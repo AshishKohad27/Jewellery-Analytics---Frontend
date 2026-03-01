@@ -9,6 +9,7 @@ export const addAsyncCases = (builder, action, options = {}) => {
         .addCase(action.pending, (state) => {
             state.loading = true;
             state.error = false;
+            console.log("Pending")
 
             if (onPending) {
                 onPending(state);
@@ -19,6 +20,7 @@ export const addAsyncCases = (builder, action, options = {}) => {
             state.error = false;
             state.errorMessage = "";
             state.successMessage = action.payload?.message || "";
+            console.log("fulfilled")
 
             if (onFulfilled) {
                 onFulfilled(state, action.payload);
@@ -29,7 +31,7 @@ export const addAsyncCases = (builder, action, options = {}) => {
             state.error = true;
             state.successMessage = "";
             state.errorMessage = action.payload || action.error.message;
-
+            console.log("rejected")
             if (onRejected) {
                 onRejected(state, action);
             }
