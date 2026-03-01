@@ -6,35 +6,55 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
+import { UpdateCategory } from "@/redux/category/category.action";
+import { toggleCategoryLoading } from "@/redux/category/category.slice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const initialState = {
-  category_name: "Necklace",
-  category_code: "NKL",
-  description: "Necklaces and bridal sets",
-  status: true,
-};
+const getFormData = (data) => ({
+  category_name: data?.category_name || "",
+  category_code: data?.category_code || "",
+  description: data?.description || "",
+  status: data?.status || false,
+});
 
-export default function EditCategoryDialog({ categoryId }) {
-  const [formData, setFormData] = useState(initialState);
+export default function EditCategoryDialog({ categoryData }) {
+  const [formData, setFormData] = useState(getFormData(categoryData));
+  const [open, setOpen] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : name === "category_code"
+            ? value.toUpperCase()
+            : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("categoryId: ", categoryId);
-    // console.log("formData: ", formData);
+    dispatch(UpdateCategory({ data: formData, categoryId: categoryData?.id }));
+    dispatch(toggleCategoryLoading());
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (isOpen) {
+          setFormData(getFormData(categoryData));
+        }
+        setOpen(isOpen);
+      }}
+    >
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded">
           <svg
@@ -83,12 +103,12 @@ export default function EditCategoryDialog({ categoryId }) {
 
         {/* Body */}
         <form onSubmit={handleSubmit}>
-          <input type="hidden" id="editcategoryId" value={categoryId} />
+          <input type="hidden" id="editcategoryId" value={categoryData?.id} />
           <div className="p-6 space-y-4">
             {/* <!-- Category Name --> */}
             <div>
               <label
-                for="addName"
+                htmlFor="addName"
                 className="block text-sm font-medium text-slate-700 mb-1.5"
               >
                 Category Name <span className="text-red-500">*</span>
@@ -107,7 +127,7 @@ export default function EditCategoryDialog({ categoryId }) {
             {/* <!-- Category Code --> */}
             <div>
               <label
-                for="addCode"
+                htmlFor="addCode"
                 className="block text-sm font-medium text-slate-700 mb-1.5"
               >
                 Category Code <span className="text-red-500">*</span>
@@ -119,7 +139,7 @@ export default function EditCategoryDialog({ categoryId }) {
                 type="text"
                 id="addCode"
                 required
-                maxlength="10"
+                maxLength="10"
                 placeholder="e.g. NEC, RNG, BNG"
                 className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none uppercase"
               />
@@ -130,7 +150,7 @@ export default function EditCategoryDialog({ categoryId }) {
             {/* <!-- Description --> */}
             <div>
               <label
-                for="addDescription"
+                htmlFor="addDescription"
                 className="block text-sm font-medium text-slate-700 mb-1.5"
               >
                 Description
@@ -141,7 +161,7 @@ export default function EditCategoryDialog({ categoryId }) {
                 name="description"
                 id="addDescription"
                 rows="3"
-                maxlength="255"
+                maxLength="255"
                 placeholder="Optional description (max 255 characters)"
                 className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
               ></textarea>

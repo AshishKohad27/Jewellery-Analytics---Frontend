@@ -6,38 +6,54 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getStatusChipColor } from "@/constants/colorUtils/statusColor";
+import { CreateCategory } from "@/redux/category/category.action";
+import { toggleCategoryLoading } from "@/redux/category/category.slice";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialState = {
-  category_name: "Necklace",
-  category_code: "NKL",
-  description: "Necklaces and bridal sets",
+  category_name: "",
+  category_code: "",
+  description: "",
   status: true,
 };
 
 export default function AddCategoryDialog() {
   const [formData, setFormData] = useState(initialState);
+  const [open, setOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const { error } = useSelector((store) => store.category);
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : name === "category_code"
+            ? value.toUpperCase()
+            : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("formData: ", formData);
+    dispatch(CreateCategory({ data: formData }));
+    dispatch(toggleCategoryLoading());
+
+    if (!error) {
+      setFormData(initialState);
+      setOpen(false);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button
-          className="px-4 py-2.5 bg-gold-500 text-white hover:bg-gold-600 rounded-lg text-sm font-medium flex items-center gap-2"
-        >
+        <button className="px-4 py-2.5 bg-gold-500 text-white hover:bg-gold-600 rounded-lg text-sm font-medium flex items-center gap-2">
           <svg
             className="w-4 h-4"
             fill="none"
@@ -89,7 +105,7 @@ export default function AddCategoryDialog() {
             {/* <!-- Category Name --> */}
             <div>
               <label
-                for="addName"
+                htmlFor="addName"
                 className="block text-sm font-medium text-slate-700 mb-1.5"
               >
                 Category Name <span className="text-red-500">*</span>
@@ -108,7 +124,7 @@ export default function AddCategoryDialog() {
             {/* <!-- Category Code --> */}
             <div>
               <label
-                for="addCode"
+                htmlFor="addCode"
                 className="block text-sm font-medium text-slate-700 mb-1.5"
               >
                 Category Code <span className="text-red-500">*</span>
@@ -120,7 +136,7 @@ export default function AddCategoryDialog() {
                 type="text"
                 id="addCode"
                 required
-                maxlength="10"
+                maxLength="10"
                 placeholder="e.g. NEC, RNG, BNG"
                 className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none uppercase"
               />
@@ -131,7 +147,7 @@ export default function AddCategoryDialog() {
             {/* <!-- Description --> */}
             <div>
               <label
-                for="addDescription"
+                htmlFor="addDescription"
                 className="block text-sm font-medium text-slate-700 mb-1.5"
               >
                 Description
@@ -142,7 +158,7 @@ export default function AddCategoryDialog() {
                 name="description"
                 id="addDescription"
                 rows="3"
-                maxlength="255"
+                maxLength="255"
                 placeholder="Optional description (max 255 characters)"
                 className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
               ></textarea>

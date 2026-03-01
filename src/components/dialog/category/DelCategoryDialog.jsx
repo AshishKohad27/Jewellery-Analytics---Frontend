@@ -5,13 +5,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DeleteCategory } from "@/redux/category/category.action";
+import { toggleCategoryLoading } from "@/redux/category/category.slice";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-export default function DelCategoryDialog({ categoryId }) {
+export default function DelCategoryDialog({ categoryData }) {
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
   const handleDel = () => {
-    // console.log("categoryId: ", categoryId);
+    dispatch(DeleteCategory({ categoryId: categoryData?.id }));
+    dispatch(toggleCategoryLoading());
+    setOpen(false);
   };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded">
           <svg
@@ -36,10 +46,8 @@ export default function DelCategoryDialog({ categoryId }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200 hidden">
-          <DialogTitle>
-            <h3 className="text-lg font-semibold text-slate-800">
-              Deactivate Supplier
-            </h3>
+          <DialogTitle className="text-lg font-semibold text-slate-800">
+            Deactivate Supplier
           </DialogTitle>
           <DialogClose asChild>
             <button className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
@@ -90,7 +98,7 @@ export default function DelCategoryDialog({ categoryId }) {
             >
               "Necklace"
             </p>
-            <input type="hidden" id="deleteId" value={categoryId} />
+            <input type="hidden" id="deleteId" value={categoryData?.id} />
           </div>
           {/* Footer */}
           <div className="flex items-center justify-center gap-3 p-6 border-t border-slate-200">
@@ -106,7 +114,7 @@ export default function DelCategoryDialog({ categoryId }) {
             <button
               onClick={handleDel}
               type="button"
-              onclick="document.getElementById('deleteSupplierModal').classList.add('hidden')"
+
               className="px-4 py-2.5 bg-red-600 text-white hover:bg-red-700 rounded-lg text-sm font-medium transition-colors"
             >
               Confirm Deactivate

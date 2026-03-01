@@ -5,6 +5,7 @@ import analyticsSlice from '@/redux/analytics/analytics.slice';
 import roleSlice from '@/redux/role/role.slice';
 import supplierSlice from '@/redux/supplier/supplier.slice';
 import metalSlice from '@/redux/metal/metal.slice';
+import categorySlice from '@/redux/category/category.slice';
 import notificationSlice from '@/redux/notification/notification.slice';
 import notificationMiddleware from '@/redux/middleware/notificationMiddleware';
 
@@ -16,6 +17,7 @@ export const store = configureStore({
         role: roleSlice,
         supplier: supplierSlice,
         metal: metalSlice,
+        category: categorySlice,
         notification: notificationSlice,
     },
     middleware: (getDefaultMiddleware) =>
