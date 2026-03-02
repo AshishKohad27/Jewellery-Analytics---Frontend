@@ -36,9 +36,21 @@ const DEFAULT_PAYMENT_MODE_COLOR = {
     bg: "bg-gray-100",
     text: "text-gray-800",
 };
-
 export const getPaymentModeColor = (mode) =>
     PAYMENT_MODE_COLORS[mode] || DEFAULT_PAYMENT_MODE_COLOR;
+
+export const getPaymentModeChipColor = (mode) => {
+    return PAYMENT_MODE_COLORS[mode]
+        ? `${PAYMENT_MODE_COLORS[mode].text}`
+        : `${DEFAULT_PAYMENT_MODE_COLOR[mode].text}`;
+}
+
+export const getPaymentModeChip = (mode) => {
+    // console.log('mode: ', PAYMENT_MODE_COLORS[mode].bg);
+    return PAYMENT_MODE_COLORS[mode]
+        ? `${PAYMENT_MODE_COLORS[mode].bg} ${PAYMENT_MODE_COLORS[mode].text}`
+        : `${DEFAULT_PAYMENT_MODE_COLOR[mode].bg} ${DEFAULT_PAYMENT_MODE_COLOR[mode].text}`;
+}
 
 export const getPaymentModeHex = (mode) =>
     getPaymentModeColor(mode).hex;

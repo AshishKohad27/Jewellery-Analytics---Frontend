@@ -12,6 +12,7 @@ export default function Pagination({
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    console.log('total: ', total);
     const pageFromUrl = Number(searchParams.get("page")) || 1;
     setPage(pageFromUrl);
   }, [searchParams]);
