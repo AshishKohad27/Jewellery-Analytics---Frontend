@@ -16,8 +16,8 @@ export const METAL_COLORS = {
     },
     Platinum: {
         hex: "#94A3B8",
-        bg: "bg-slate-100",
-        text: "text-slate-800",
+        bg: "bg-blue-100",
+        text: "text-blue-800",
     },
     "Rose Gold": {
         hex: "#F43F5E",
@@ -47,8 +47,23 @@ const DEFAULT_METAL_COLOR = {
     text: "text-gray-800",
 };
 
-export const getMetalColor = (metalName) =>
-    METAL_COLORS[metalName] || DEFAULT_METAL_COLOR;
+export const getMetalBgColor = (metalName) => {
+    return METAL_COLORS[metalName]
+        ? `${METAL_COLORS[metalName].bg}`
+        : `${DEFAULT_METAL_COLOR.bg}`;
+};
+
+export const getMetalTextColor = (metalName) => {
+    return METAL_COLORS[metalName]
+        ? `${METAL_COLORS[metalName].text}`
+        : `${DEFAULT_METAL_COLOR.text}`;
+};
+
+export const getMetalChip = (metalName) => {
+    return METAL_COLORS[metalName]
+        ? `${METAL_COLORS[metalName].text} ${METAL_COLORS[metalName].bg}`
+        : `${DEFAULT_METAL_COLOR.text} ${DEFAULT_METAL_COLOR.bg}`;
+};
 
 export const getMetalHex = (metalName) =>
     getMetalColor(metalName).hex;

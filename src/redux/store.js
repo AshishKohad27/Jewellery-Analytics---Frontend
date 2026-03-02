@@ -8,6 +8,8 @@ import metalSlice from '@/redux/metal/metal.slice';
 import categorySlice from '@/redux/category/category.slice';
 import userSlice from '@/redux/user/user.slice';
 import customerSlice from '@/redux/customer/customer.slice';
+import inventorySlice from '@/redux/inventory/inventory.slice';
+import jewelleryItemSlice from '@/redux/jewellery-item/jewellery-item.slice';
 import notificationSlice from '@/redux/notification/notification.slice';
 import notificationMiddleware from '@/redux/middleware/notificationMiddleware';
 
@@ -22,6 +24,8 @@ export const store = configureStore({
         category: categorySlice,
         user: userSlice,
         customer: customerSlice,
+        inventory: inventorySlice,
+        jewellery: jewelleryItemSlice,
         notification: notificationSlice,
     },
     middleware: (getDefaultMiddleware) =>

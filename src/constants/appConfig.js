@@ -64,6 +64,20 @@ export const formatNumberWithComma = (amount) => {
     return new Intl.NumberFormat("en-IN").format(amount);
 };
 
+export const formatCurrencyWithComma = (amount) => {
+    if (amount === null || amount === undefined || isNaN(amount)) {
+        return "₹0";
+    }
+
+    return new Intl.NumberFormat("en-IN", {
+        maximumFractionDigits: 2,
+    }).format(amount)
+        ? `₹${new Intl.NumberFormat("en-IN", {
+            maximumFractionDigits: 2,
+        }).format(amount)}`
+        : "₹0";
+};
+
 export const formatDateTime = (isoString) => {
     if (!isoString) return "-";
 
@@ -95,14 +109,14 @@ export const formatDate = (isoString) => {
 };
 
 export const formatTime = (isoString) => {
-  if (!isoString) return "-";
+    if (!isoString) return "-";
 
-  const date = new Date(isoString);
-  if (isNaN(date)) return "-";
+    const date = new Date(isoString);
+    if (isNaN(date)) return "-";
 
-  return date.toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+    return date.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+    });
 };

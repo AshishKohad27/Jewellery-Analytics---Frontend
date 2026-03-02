@@ -57,8 +57,23 @@ const DEFAULT_CATEGORY_COLOR = {
     text: "text-gray-800",
 };
 
-export const getCategoryColor = (categoryName) =>
-    CATEGORY_COLORS[categoryName] || DEFAULT_CATEGORY_COLOR;
+export const getCategoryBgColor = (categoryName) => {
+    return CATEGORY_COLORS[categoryName]
+        ? `${CATEGORY_COLORS[categoryName].bg}`
+        : `${DEFAULT_CATEGORY_COLOR.bg}`;
+};
+
+export const getCategoryTextColor = (categoryName) => {
+    return CATEGORY_COLORS[categoryName]
+        ? `${CATEGORY_COLORS[categoryName].text}`
+        : `${DEFAULT_CATEGORY_COLOR.text}`;
+};
+
+export const getCategoryChip = (categoryName) => {
+    return CATEGORY_COLORS[categoryName]
+        ? `${CATEGORY_COLORS[categoryName].text} ${CATEGORY_COLORS[categoryName].bg}`
+        : `${DEFAULT_CATEGORY_COLOR.text} ${DEFAULT_CATEGORY_COLOR.bg}`;
+};
 
 export const getCategoryHex = (categoryName) =>
     getCategoryColor(categoryName).hex;
