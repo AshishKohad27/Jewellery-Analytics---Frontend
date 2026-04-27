@@ -3,10 +3,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "@/services/apiClient";
 
-let BASE_URL = "/analytics";
+const BASE_URL = "/analytics";
 
 export const GetSummaryAction = createAsyncThunk(
-    "get/test",
+    "analytics/summary/get",
     async (_, { rejectWithValue }) => {
         try {
             const response = await apiClient.get(`${BASE_URL}/summary`);

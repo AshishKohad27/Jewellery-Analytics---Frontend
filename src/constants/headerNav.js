@@ -106,7 +106,7 @@ export const navLink = {
     analyticsLinks: [
         {
             label: "Sales Analytics",
-            link: "",
+            link: "/analytics/sales",
             icon: (
                 <svg
                     className="w-5 h-5"
@@ -125,7 +125,7 @@ export const navLink = {
         },
         {
             label: "Inventory Analytics",
-            link: "",
+            link: "/analytics/inventory",
             icon: (
                 <svg
                     className="w-5 h-5"
@@ -150,7 +150,7 @@ export const navLink = {
         },
         {
             label: "Customer Analytics",
-            link: "",
+            link: "/analytics/customer",
             icon: (
                 <svg
                     className="w-5 h-5"

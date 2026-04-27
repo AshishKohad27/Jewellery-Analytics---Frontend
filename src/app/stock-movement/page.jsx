@@ -21,6 +21,7 @@ import {
 } from "@/constants/colorUtils/transactionType";
 import { GetInventories } from "@/redux/inventory/inventory.action";
 import { GetMetals, GetMetalStats } from "@/redux/metal/metal.action";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -402,7 +403,10 @@ export default function StockMovement() {
                         </p>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
+                        <Link
+                          href={`jewellery/${item?.jewellery_item_id}`}
+                          className="flex items-center gap-3"
+                        >
                           <div
                             className={`w-10 h-10 bg-gold-100 rounded-lg flex items-center justify-center ${getMetalBgColor(item?.jewellery_item?.metal?.metal_name)}`}
                           >
@@ -428,7 +432,7 @@ export default function StockMovement() {
                               SKU: {item?.jewellery_item?.sku}
                             </p>
                           </div>
-                        </div>
+                        </Link>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span
@@ -445,7 +449,7 @@ export default function StockMovement() {
                           {item?.transaction_type === "PURCHASE" ||
                           item?.transaction_type === "ADJUSTMENT"
                             ? "+"
-                            : "-"}
+                            : ""}
                           {item?.quantity_change}
                         </span>
                       </td>
@@ -456,7 +460,7 @@ export default function StockMovement() {
                           {item?.transaction_type === "PURCHASE" ||
                           item?.transaction_type === "ADJUSTMENT"
                             ? "+"
-                            : "-"}
+                            : ""}
                           {item?.weight_change} gm
                         </span>
                       </td>

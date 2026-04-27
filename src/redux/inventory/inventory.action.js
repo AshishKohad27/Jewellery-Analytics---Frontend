@@ -23,6 +23,24 @@ export const GetInventories = createAsyncThunk(
     },
 );
 
+export const GetInventoryByJewelleryItemId = createAsyncThunk(
+    "get/inventory/jewellery-item/id",
+    async (payload, { rejectWithValue }) => {
+
+        try {
+            const response = await apiClient.get(
+                `${BASE_URL}/${payload.id}/jewellery-item`,
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error?.response?.data?.message || "Something went wrong GetInventories",
+            );
+        }
+    },
+);
+
 export const GetInventoryStats = createAsyncThunk(
     "get/inventory/stats",
     async (_, { rejectWithValue }) => {

@@ -385,7 +385,7 @@ export default function JewelleryItem() {
               displayButtons={5}
               total={paramsData?.total}
               onPage={handlePage}
-              title="metals"
+              title="items"
             />
           </div>
         )}

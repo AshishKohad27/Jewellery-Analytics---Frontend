@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { addAsyncCases } from "@/utils/asyncCases";
-import { CreateInventory, DeleteInventory, GetInventoryStats, GetInventories, UpdateInventory } from "./inventory.action";
+import { CreateInventory, DeleteInventory, GetInventoryStats, GetInventories, UpdateInventory, GetInventoryByJewelleryItemId } from "./inventory.action";
 
 const initialState = {
     loading: false,
@@ -24,6 +24,15 @@ const inventorySlice = createSlice({
     extraReducers: (builder) => {
         // GetInventories
         addAsyncCases(builder, GetInventories, {
+            onFulfilled: (state, payload) => {
+            console.log('payload: ', payload);
+                state.data = payload?.data || [];
+                state.paramsData = payload?.params || {};
+            }
+        });
+
+        // GetInventoryByJewelleryItemId
+        addAsyncCases(builder, GetInventoryByJewelleryItemId, {
             onFulfilled: (state, payload) => {
             console.log('payload: ', payload);
                 state.data = payload?.data || [];

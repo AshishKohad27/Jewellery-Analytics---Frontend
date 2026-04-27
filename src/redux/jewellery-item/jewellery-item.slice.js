@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { addAsyncCases } from "@/utils/asyncCases";
-import { CreateJewelleryItem, DeleteJewelleryItem, GetJewelleryItemStats, GetJewelleryItems, UpdateJewelleryItem } from "./jewellery-item.action";
+import { CreateJewelleryItem, DeleteJewelleryItem, GetJewelleryItemById, GetJewelleryItemStats, GetJewelleryItems, UpdateJewelleryItem } from "./jewellery-item.action";
 
 const initialState = {
     loading: false,
@@ -25,7 +25,16 @@ const jewelleryItemSlice = createSlice({
         // GetJewelleryItems
         addAsyncCases(builder, GetJewelleryItems, {
             onFulfilled: (state, payload) => {
-            console.log('payload: ', payload);
+                console.log('payload: ', payload);
+                state.data = payload?.data || [];
+                state.paramsData = payload?.params || {};
+            }
+        });
+
+        // GetJewelleryItemById
+        addAsyncCases(builder, GetJewelleryItemById, {
+            onFulfilled: (state, payload) => {
+                console.log('payload: ', payload);
                 state.data = payload?.data || [];
                 state.paramsData = payload?.params || {};
             }

@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import testSlice from '@/redux/test/test.slice';
 import authSlice from '@/redux/auth/auth.slice';
-import analyticsSlice from '@/redux/analytics/analytics.slice';
+import analytics from '@/redux/analytics';
 import roleSlice from '@/redux/role/role.slice';
 import supplierSlice from '@/redux/supplier/supplier.slice';
 import metalSlice from '@/redux/metal/metal.slice';
@@ -18,7 +18,7 @@ export const store = configureStore({
     reducer: {
         test: testSlice,
         auth: authSlice,
-        analytic: analyticsSlice,
+        analytics,
         role: roleSlice,
         supplier: supplierSlice,
         metal: metalSlice,

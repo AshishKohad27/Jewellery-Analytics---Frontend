@@ -5,6 +5,26 @@ import apiClient from "@/services/apiClient";
 
 let BASE_URL = "/jewellery-items";
 
+export const GetJewelleryItemById = createAsyncThunk(
+    "get/jewellery-item-id",
+    async (payload, { rejectWithValue }) => {
+        console.log('payload: ', payload.id);
+
+        try {
+            const response = await apiClient.get(
+                `${BASE_URL}/${payload?.id}`,
+            );
+            console.log('response: ', response);
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error?.response?.data?.message || "Something went wrong GetJewelleryItems",
+            );
+        }
+    },
+);
+
 export const GetJewelleryItems = createAsyncThunk(
     "get/jewellery-items",
     async (payload, { rejectWithValue }) => {
@@ -13,7 +33,7 @@ export const GetJewelleryItems = createAsyncThunk(
         try {
             const response = await apiClient.get(
                 `${BASE_URL}/?search=${payload?.search}&page=${payload?.page}&limit=${payload?.limit}`,
-            );  
+            );
             console.log('response: ', response);
 
             return response.data;

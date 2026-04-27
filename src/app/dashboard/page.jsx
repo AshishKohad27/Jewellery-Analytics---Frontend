@@ -3,7 +3,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { SalesTrendSection, CategoryChart } from "./DashboardCharts";
 import { useEffect } from "react";
-import { GetSummaryAction } from "@/redux/analytics/analytics.action";
+import { GetSummaryAction } from "@/redux/analytics/summary/summary.action";
 import {
   formatCurrencyCompact,
   formatNumberWithComma,
@@ -11,8 +11,8 @@ import {
 import DashboardSkeleton from "@/components/skeleton/DashboardSkeleton";
 
 export default function Dashboard() {
-  const { loading, error, data, paramsData, successMessage } = useSelector(
-    (state) => state.analytic,
+  const { loading, error, data, successMessage } = useSelector(
+    (state) => state.analytics.summary,
   );
 
   const dispatch = useDispatch();
@@ -26,7 +26,6 @@ export default function Dashboard() {
       loading,
       error,
       data,
-      paramsData,
       successMessage,
     });
   }, [loading]);
