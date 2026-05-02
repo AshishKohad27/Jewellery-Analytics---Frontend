@@ -1,5 +1,10 @@
 "use client";
 
+import StatsCardsSkeleton from "@/components/skeleton/StatsCardsSkeleton";
+import {
+  formatCurrencyWithComma,
+  formatNumberWithComma,
+} from "@/constants/appConfig";
 import { GetCustomerStats } from "@/redux/analytics/customer/customer.action";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -91,112 +96,128 @@ export default function Customers() {
         {/* <!-- ============================================ 
                  CUSTOMER OVERVIEW CARDS
             ============================================= --> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
-          {/* <!-- Total Customers --> */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
+        {loading ? (
+          <StatsCardsSkeleton cards={4} />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+            {/* <!-- Total Customers --> */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                  +{stats?.customerTotal?.new} new
+                </span>
               </div>
-              <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                +24 new
-              </span>
+              <p className="text-sm text-slate-500 mb-1">Total Customers</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {formatNumberWithComma(stats?.customerTotal?.total)}
+              </p>
+              <p className="text-xs text-slate-400 mt-2">All time registered</p>
             </div>
-            <p className="text-sm text-slate-500 mb-1">Total Customers</p>
-            <p className="text-2xl font-bold text-slate-800">1,284</p>
-            <p className="text-xs text-slate-400 mt-2">All time registered</p>
-          </div>
 
-          {/* <!-- Repeat Customers --> */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 bg-gold-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-gold-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
+            {/* <!-- Repeat Customers --> */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 bg-gold-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-gold-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                  {stats?.repeatCustomers?.percentage}%
+                </span>
               </div>
-              <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                68%
-              </span>
+              <p className="text-sm text-slate-500 mb-1">Repeat Customers</p>
+              <p className="text-2xl font-bold text-gold-600">
+                {formatNumberWithComma(stats?.repeatCustomers?.total)}
+              </p>
+              <p className="text-xs text-slate-400 mt-2">2+ purchases</p>
             </div>
-            <p className="text-sm text-slate-500 mb-1">Repeat Customers</p>
-            <p className="text-2xl font-bold text-gold-600">873</p>
-            <p className="text-xs text-slate-400 mt-2">2+ purchases</p>
-          </div>
 
-          {/* <!-- High-Value Customers --> */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                  />
-                </svg>
+            {/* <!-- High-Value Customers --> */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-purple-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
+                  </svg>
+                </div>
               </div>
+              <p className="text-sm text-slate-500 mb-1">
+                High-Value Customers
+              </p>
+              <p className="text-2xl font-bold text-purple-600">
+                {" "}
+                {formatNumberWithComma(stats?.highValueCustomers?.total)}
+              </p>
+              <p className="text-xs text-slate-400 mt-2">₹5L+ lifetime spend</p>
             </div>
-            <p className="text-sm text-slate-500 mb-1">High-Value Customers</p>
-            <p className="text-2xl font-bold text-purple-600">156</p>
-            <p className="text-xs text-slate-400 mt-2">₹5L+ lifetime spend</p>
-          </div>
 
-          {/* <!-- Customer Lifetime Value --> */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-emerald-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+            {/* <!-- Customer Lifetime Value --> */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-emerald-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                  +12%
+                </span>
               </div>
-              <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                +12%
-              </span>
+              <p className="text-sm text-slate-500 mb-1">Avg. Lifetime Value</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {" "}
+                {formatCurrencyWithComma(stats?.avgLifetimeValue?.total)}
+              </p>
+              <p className="text-xs text-slate-400 mt-2">Per customer</p>
             </div>
-            <p className="text-sm text-slate-500 mb-1">Avg. Lifetime Value</p>
-            <p className="text-2xl font-bold text-slate-800">₹2.8L</p>
-            <p className="text-xs text-slate-400 mt-2">Per customer</p>
           </div>
-        </div>
+        )}
 
         {/* <!-- ============================================ 
                  CUSTOMER SEGMENTATION 

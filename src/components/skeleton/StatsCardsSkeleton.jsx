@@ -1,8 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
-export default function StatsCardsSkeleton() {
+export default function StatsCardsSkeleton({ cards = 3 }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-8">
-      {[...Array(3)].map((_, i) => (
+    <div
+      className={`grid grid-cols-1 md:grid-cols-${cards === 3 ? '3' : '4'} gap-4 lg:gap-6 mb-8`}
+    >
+      {[...Array(cards)].map((_, i) => (
         <div
           key={i}
           className="bg-white rounded-xl p-6 shadow-sm border border-slate-100"

@@ -120,3 +120,14 @@ export const formatTime = (isoString) => {
         hour12: true,
     });
 };
+
+export const generateColorsCharts = (count) => {
+    return Array.from({ length: count }, (_, i) => {
+        const hue = (i * 360) / count;
+
+        const saturation = 65 + (i % 3) * 10; // 65, 75, 85
+        const lightness = 55 + (i % 2) * 10; // 55, 65
+
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    });
+};

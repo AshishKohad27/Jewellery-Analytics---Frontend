@@ -1,5 +1,3 @@
-"use client";
-
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "@/services/apiClient";
 
