@@ -2,6 +2,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import summary from "./summary/summary.slice";
 import customer from "./customer/customer.slice";
 import staff from "./staff/staff.slice";
+import supplier from "./supplier/supplier.slice";
 
 // When adding a new analytics domain (sale, inventory, user, etc.):
 //   1. create ./<domain>/<domain>.action.js + ./<domain>/<domain>.slice.js
@@ -11,4 +12,5 @@ export default combineReducers({
     summary,
     customer,
     staff,
+    supplier
 });

@@ -42,7 +42,7 @@ export const getPaymentModeColor = (mode) =>
 export const getPaymentModeChipColor = (mode) => {
     return PAYMENT_MODE_COLORS[mode]
         ? `${PAYMENT_MODE_COLORS[mode].text}`
-        : `${DEFAULT_PAYMENT_MODE_COLOR[mode].text}`;
+        : `${DEFAULT_PAYMENT_MODE_COLOR.text}`;
 }
 
 export const getPaymentModeChip = (mode) => {
